@@ -16,7 +16,7 @@
 - [ ] Delete Product
 
 ### Run localy application:
-[Docker](https://www.docker.com/) is required
+[Docker](https://www.docker.com/) **with docker compose module** is required
 
 ```bash
 docker compose up -d # exposed in port 3000
