@@ -14,7 +14,7 @@
 - [x] List One Product
 - [x] Update Product
 - [x] Delete Product
-- [ ] Use [viper](https://github.com/spf13/viper) library for app config and **.env** file for docker-compose
+- [x] Use [viper](https://github.com/spf13/viper) library for app config and **.env** file for docker-compose
 
 ### Run localy application:
 [Docker](https://www.docker.com/) **with docker compose module** is required

@@ -1,0 +1,9 @@
+[api]
+port = "3000"
+
+[db]
+host = "api_db"
+user = "myuser"
+password = "mypassword"
+dbname = "postgres"
+sslmode = "disable"
