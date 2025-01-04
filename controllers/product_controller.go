@@ -57,11 +57,43 @@ func (p *productController) GetProductById(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	product, err := p.ProductUsecase.GetProductById(productID)
+	product, _ := p.ProductUsecase.GetProductById(productID)
 	if product == nil {
 		response := model.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
 		return
 	}
 	ctx.JSON(http.StatusOK, product)
+}
+
+func (p *productController) UpdateProduct(ctx *gin.Context) {
+	id := ctx.Param("id")
+	if (id == "") {
+		response := model.Response{Message: "Missing product ID"}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	productID, err := strconv.Atoi(id)
+	if err != nil {
+		response := model.Response{Message: "Invalid product ID. Only integer are allowed"}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	var product model.Product
+	err = ctx.BindJSON(&product)
+	if err != nil {
+		response := model.Response{Message: "Invalid request payload"}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	updatedProduct, _ := p.ProductUsecase.UpdateProduct(productID, product)
+	if updatedProduct == (model.Product{}) {
+		response := model.Response{Message: "Product not found"}
+		ctx.JSON(http.StatusNotFound, response)
+		return
+	}
+	ctx.JSON(http.StatusOK, updatedProduct)
 }

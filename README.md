@@ -12,7 +12,7 @@
 - [x] Create Product
 - [x] List All Products
 - [x] List One Product
-- [ ] Update Product
+- [x] Update Product
 - [ ] Delete Product
 - [ ] Database variables in **.env** file
 
