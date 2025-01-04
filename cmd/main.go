@@ -33,6 +33,7 @@ func main() {
 	v1.GET("/product/:id", productController.GetProductById)
 	v1.POST("/product", productController.CreateProduct)
 	v1.PUT("/product/:id", productController.UpdateProduct)
+	v1.DELETE("/product/:id", productController.DeleteProduct)
 	// Run the server port
 	server.Run(":3000")
 }

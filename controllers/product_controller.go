@@ -97,3 +97,28 @@ func (p *productController) UpdateProduct(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, updatedProduct)
 }
+
+func (p *productController) DeleteProduct(ctx *gin.Context) {
+	id := ctx.Param("id")
+	if (id == "") {
+		response := model.Response{Message: "Missing product ID"}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	productID, err := strconv.Atoi(id)
+	if err != nil {
+		response := model.Response{Message: "Invalid product ID. Only integer are allowed"}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	deletedProduct, _ := p.ProductUsecase.DeleteProduct(productID)
+	if deletedProduct == nil {
+		response := model.Response{Message: "Product not found"}
+		ctx.JSON(http.StatusNotFound, response)
+		return
+	}
+	response := model.Response{Message: "Product deleted successfully"}
+	ctx.JSON(http.StatusOK, response)
+}

@@ -97,3 +97,24 @@ func (p *ProductRepository) UpdateProduct(id int, product model.Product) (int, e
 	query.Close()
 	return id, nil
 }
+
+func (p *ProductRepository) DeleteProduct(id int) (*model.Product, error) {
+	query, err := p.connection.Prepare("DELETE FROM product WHERE id = $1 RETURNING id")
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	var product model.Product
+
+	err = query.QueryRow(id).Scan(&id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		fmt.Println(err)
+		return nil, err
+	}
+	query.Close()
+	return &product, nil
+}

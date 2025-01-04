@@ -13,7 +13,7 @@
 - [x] List All Products
 - [x] List One Product
 - [x] Update Product
-- [ ] Delete Product
+- [x] Delete Product
 - [ ] Database variables in **.env** file
 
 ### Run localy application:

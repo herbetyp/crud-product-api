@@ -30,12 +30,12 @@ func (p *ProductUsecase) CreateProduct(product model.Product) (model.Product, er
 }
 
 func (p *ProductUsecase) GetProductById(id int) (*model.Product, error) {
-	product, err := p.repository.GetProductById(id)
+	retriveProduct, err := p.repository.GetProductById(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return product, nil
+	return retriveProduct, nil
 }
 
 func (p *ProductUsecase) UpdateProduct(id int, product model.Product) (model.Product, error) {
@@ -46,4 +46,13 @@ func (p *ProductUsecase) UpdateProduct(id int, product model.Product) (model.Pro
 
 	product.ID = updatedProductId
 	return product, nil
+}
+
+func (p *ProductUsecase) DeleteProduct(id int) (*model.Product, error) {
+	deletedProduct, err := p.repository.DeleteProduct(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return deletedProduct, nil
 }

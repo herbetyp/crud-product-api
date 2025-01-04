@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	host     = "api_db"
+	host     = "localhost"
 	port     = 5432
 	user     = "myuser"
 	password = "mypassword"
