@@ -1,6 +1,7 @@
 services:
   api_app:
     container_name: crud_product_api_app
+    restart: always
     build: .
     ports:
       - "3000:3000"

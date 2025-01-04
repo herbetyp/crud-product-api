@@ -14,6 +14,7 @@
 - [x] List One Product
 - [ ] Update Product
 - [ ] Delete Product
+- [ ] Database variables in **.env** file
 
 ### Run localy application:
 [Docker](https://www.docker.com/) **with docker compose module** is required
