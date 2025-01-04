@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
+	"github.com/herbetyp/crud-product-api/configs"
 	"github.com/herbetyp/crud-product-api/controllers"
 	"github.com/herbetyp/crud-product-api/db"
 	"github.com/herbetyp/crud-product-api/repository"
@@ -34,6 +37,8 @@ func main() {
 	v1.POST("/product", productController.CreateProduct)
 	v1.PUT("/product/:id", productController.UpdateProduct)
 	v1.DELETE("/product/:id", productController.DeleteProduct)
+
 	// Run the server port
-	server.Run(":3000")
+	cfg := configs.GetConfig()
+	server.Run(fmt.Sprintf(":%s", cfg.API.Port))
 }
