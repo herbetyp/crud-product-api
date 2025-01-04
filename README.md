@@ -4,4 +4,20 @@
 
 # Crud Product API - Golang
 
-API for product inventory management.
+>API for product inventory management.
+
+### API Features:
+- [ ] Authentication Endpoint
+- [ ] Authorization from **JWT Bearer token**
+- [x] Create Product
+- [x] List All Products
+- [x] List One Product
+- [ ] Update Product
+- [ ] Delete Product
+
+### Run localy application:
+[Docker](https://www.docker.com/) is required
+
+```bash
+docker compose up -d # exposed in port 3000
+```
