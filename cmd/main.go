@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/herbetyp/crud-product-api/configs"
 	"github.com/herbetyp/crud-product-api/controllers"
-	"github.com/herbetyp/crud-product-api/db"
+	"github.com/herbetyp/crud-product-api/database"
+	"github.com/herbetyp/crud-product-api/handlers"
 	"github.com/herbetyp/crud-product-api/repository"
-	"github.com/herbetyp/crud-product-api/usecase"
 )
 
 func main() {
@@ -19,16 +19,16 @@ func main() {
 	v1 := server.Group("/v1")
 
 	// Database connection
-	dbConnection, err := db.ConnectDB()
+	dbConnection, err := database.ConnectDB()
 	if err != nil {
 		panic(err)
 	}
 	// Repositories
-	ProductRepository := repository.NewProductRepository(dbConnection)
-	// Usecases
-	ProductUsecase := usecase.NewProductUsecase(ProductRepository)
+	productRepository := repository.NewProductRepository(dbConnection)
+	// Handlers
+	productHandler := handlers.NewProductHandler(productRepository)
 	// Controllers
-	productController := controllers.NewProductController(ProductUsecase)
+	productController := controllers.NewProductController(productHandler)
 	// Test the connection to server
 	server.GET("/ping", func(ctx *gin.Context) { ctx.JSON(200, gin.H{"message": "pong"}) })
 	// API Endpoints

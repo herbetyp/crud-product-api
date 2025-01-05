@@ -3,24 +3,25 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/herbetyp/crud-product-api/model"
-	"github.com/herbetyp/crud-product-api/usecase"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/herbetyp/crud-product-api/handlers"
+	"github.com/herbetyp/crud-product-api/model"
 )
 
 type productController struct {
-	ProductUsecase usecase.ProductUsecase
+	ProductHandler handlers.ProductHandler
 }
 
-func NewProductController(usecase usecase.ProductUsecase) productController {
-	return productController{
-		ProductUsecase: usecase,
+func NewProductController(handler handlers.ProductHandler) productController {
+	return productController {
+		ProductHandler: handler,
 	}
 }
 
 func (p *productController) GetProducts(ctx *gin.Context) {
-	products, err := p.ProductUsecase.GetProducts()
+	products, err := p.ProductHandler.GetProducts()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -35,7 +36,7 @@ func (p *productController) CreateProduct(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
-	insertedProduct, err := p.ProductUsecase.CreateProduct(product)
+	insertedProduct, err := p.ProductHandler.CreateProduct(product)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -57,7 +58,7 @@ func (p *productController) GetProductById(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	product, _ := p.ProductUsecase.GetProductById(productID)
+	product, _ := p.ProductHandler.GetProductById(productID)
 	if product == nil {
 		response := model.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
@@ -89,7 +90,7 @@ func (p *productController) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 
-	updatedProduct, _ := p.ProductUsecase.UpdateProduct(productID, product)
+	updatedProduct, _ := p.ProductHandler.UpdateProduct(productID, product)
 	if updatedProduct == (model.Product{}) {
 		response := model.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
@@ -113,7 +114,7 @@ func (p *productController) DeleteProduct(ctx *gin.Context) {
 		return
 	}
 
-	deletedProduct, _ := p.ProductUsecase.DeleteProduct(productID)
+	deletedProduct, _ := p.ProductHandler.DeleteProduct(productID)
 	if deletedProduct == nil {
 		response := model.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
