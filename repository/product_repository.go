@@ -5,21 +5,15 @@ import (
 	"fmt"
 
 	"github.com/herbetyp/crud-product-api/model"
+	"github.com/herbetyp/crud-product-api/database"
 )
 
-type ProductRepository struct {
-	connection *sql.DB
-}
+var connection_db = database.ConnectDB()
 
-func NewProductRepository(connection *sql.DB) ProductRepository {
-	return ProductRepository{
-		connection: connection,
-	}
-}
 
-func (p *ProductRepository) GetProducts() ([]model.Product, error) {
+func GetProductsRepository() ([]model.Product, error) {
 	query := "SELECT id, product_name, price FROM product"
-	rows, err := p.connection.Query(query)
+	rows, err := connection_db.Query(query)
 	if err != nil {
 		fmt.Println(err)
 		return []model.Product{}, err
@@ -41,9 +35,9 @@ func (p *ProductRepository) GetProducts() ([]model.Product, error) {
 	return productList, nil
 }
 
-func (p *ProductRepository) CreateProduct(product model.Product) (int, error) {
+func CreateProductRepository(product model.Product) (int, error) {
 	var id int
-	query, err := p.connection.Prepare("INSERT INTO product (product_name, price) VALUES ($1, $2) RETURNING id")
+	query, err := connection_db.Prepare("INSERT INTO product (product_name, price) VALUES ($1, $2) RETURNING id")
 	if err != nil {
 		fmt.Println(err)
 		return 0, err
@@ -54,12 +48,13 @@ func (p *ProductRepository) CreateProduct(product model.Product) (int, error) {
 		fmt.Println(err)
 		return 0, err
 	}
+	query.Close()
 	return id, nil
 }
 
 
-func (p *ProductRepository) GetProductById(id int) (*model.Product, error) {
-	query, err :=  p.connection.Prepare("SELECT * FROM product WHERE id = $1")
+func GetProductByIdRepository(id int) (*model.Product, error) {
+	query, err :=  connection_db.Prepare("SELECT * FROM product WHERE id = $1")
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -79,8 +74,8 @@ func (p *ProductRepository) GetProductById(id int) (*model.Product, error) {
 	return &product, nil
 }
 
-func (p *ProductRepository) UpdateProduct(id int, product model.Product) (int, error) {
-	query, err := p.connection.Prepare("UPDATE product SET product_name = $1, price = $2 WHERE id = $3 RETURNING id")
+func UpdateProductRepository(id int, product model.Product) (int, error) {
+	query, err := connection_db.Prepare("UPDATE product SET product_name = $1, price = $2 WHERE id = $3 RETURNING id")
 	if err != nil {
 		fmt.Println(err)
 		return 0, err
@@ -98,8 +93,8 @@ func (p *ProductRepository) UpdateProduct(id int, product model.Product) (int, e
 	return id, nil
 }
 
-func (p *ProductRepository) DeleteProduct(id int) (*model.Product, error) {
-	query, err := p.connection.Prepare("DELETE FROM product WHERE id = $1 RETURNING id")
+func DeleteProductRepository(id int) (*model.Product, error) {
+	query, err := connection_db.Prepare("DELETE FROM product WHERE id = $1 RETURNING id")
 	if err != nil {
 		fmt.Println(err)
 		return nil, err

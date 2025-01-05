@@ -5,22 +5,13 @@ import (
 	"github.com/herbetyp/crud-product-api/repository"
 )
 
-type ProductHandler struct {
-	repository repository.ProductRepository
+
+func GetProductsHandler() ([]model.Product, error) {
+	return repository.GetProductsRepository()
 }
 
-func NewProductHandler(repo repository.ProductRepository) ProductHandler {
-	return ProductHandler{
-		repository: repo,
-	}
-}
-
-func (p *ProductHandler) GetProducts() ([]model.Product, error) {
-	return p.repository.GetProducts()
-}
-
-func (p *ProductHandler) CreateProduct(product model.Product) (model.Product, error) {
-	productId, err := p.repository.CreateProduct(product)
+func CreateProductHandler(product model.Product) (model.Product, error) {
+	productId, err := repository.CreateProductRepository(product)
 	if err != nil {
 		return model.Product{}, err
 	}
@@ -29,8 +20,8 @@ func (p *ProductHandler) CreateProduct(product model.Product) (model.Product, er
 	return product, nil
 }
 
-func (p *ProductHandler) GetProductById(id int) (*model.Product, error) {
-	retriveProduct, err := p.repository.GetProductById(id)
+func GetProductByIdHandler(id int) (*model.Product, error) {
+	retriveProduct, err := repository.GetProductByIdRepository(id)
 	if err != nil {
 		return nil, err
 	}
@@ -38,8 +29,8 @@ func (p *ProductHandler) GetProductById(id int) (*model.Product, error) {
 	return retriveProduct, nil
 }
 
-func (p *ProductHandler) UpdateProduct(id int, product model.Product) (model.Product, error) {
-	updatedProductId, err := p.repository.UpdateProduct(id, product)
+func UpdateProductHandler(id int, product model.Product) (model.Product, error) {
+	updatedProductId, err := repository.UpdateProductRepository(id, product)
 	if err != nil {
 		return model.Product{}, err
 	}
@@ -48,8 +39,8 @@ func (p *ProductHandler) UpdateProduct(id int, product model.Product) (model.Pro
 	return product, nil
 }
 
-func (p *ProductHandler) DeleteProduct(id int) (*model.Product, error) {
-	deletedProduct, err := p.repository.DeleteProduct(id)
+func DeleteProductHandler(id int) (*model.Product, error) {
+	deletedProduct, err := repository.DeleteProductRepository(id)
 	if err != nil {
 		return nil, err
 	}

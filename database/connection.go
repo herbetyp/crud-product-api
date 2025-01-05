@@ -8,7 +8,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func ConnectDB() (*sql.DB, error) {
+func ConnectDB() *sql.DB {
 	conf := configs.GetConfig()
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
@@ -24,5 +24,5 @@ func ConnectDB() (*sql.DB, error) {
 	}
 
 	fmt.Println("Connected to " + conf.DB.DBName)
-	return conn, nil
+	return conn
 }

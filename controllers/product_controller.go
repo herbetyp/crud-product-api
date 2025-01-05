@@ -10,18 +10,9 @@ import (
 	"github.com/herbetyp/crud-product-api/model"
 )
 
-type productController struct {
-	ProductHandler handlers.ProductHandler
-}
 
-func NewProductController(handler handlers.ProductHandler) productController {
-	return productController {
-		ProductHandler: handler,
-	}
-}
-
-func (p *productController) GetProducts(ctx *gin.Context) {
-	products, err := p.ProductHandler.GetProducts()
+func GetProductsController(ctx *gin.Context) {
+	products, err := handlers.GetProductsHandler()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -29,14 +20,14 @@ func (p *productController) GetProducts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, products)
 }
 
-func (p *productController) CreateProduct(ctx *gin.Context) {
+func CreateProductController(ctx *gin.Context) {
 	var product model.Product
 	err := ctx.BindJSON(&product)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
-	insertedProduct, err := p.ProductHandler.CreateProduct(product)
+	insertedProduct, err := handlers.CreateProductHandler(product)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -44,7 +35,7 @@ func (p *productController) CreateProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, insertedProduct)
 }
 
-func (p *productController) GetProductById(ctx *gin.Context) {
+func GetProductByIdController(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if (id == "") {
 		response := model.Response{Message: "Missing product ID"}
@@ -58,7 +49,7 @@ func (p *productController) GetProductById(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	product, _ := p.ProductHandler.GetProductById(productID)
+	product, _ := handlers.GetProductByIdHandler(productID)
 	if product == nil {
 		response := model.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
@@ -67,7 +58,7 @@ func (p *productController) GetProductById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, product)
 }
 
-func (p *productController) UpdateProduct(ctx *gin.Context) {
+func UpdateProductController(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if (id == "") {
 		response := model.Response{Message: "Missing product ID"}
@@ -90,7 +81,7 @@ func (p *productController) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 
-	updatedProduct, _ := p.ProductHandler.UpdateProduct(productID, product)
+	updatedProduct, _ := handlers.UpdateProductHandler(productID, product)
 	if updatedProduct == (model.Product{}) {
 		response := model.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
@@ -99,7 +90,7 @@ func (p *productController) UpdateProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, updatedProduct)
 }
 
-func (p *productController) DeleteProduct(ctx *gin.Context) {
+func DeleteProductController(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if (id == "") {
 		response := model.Response{Message: "Missing product ID"}
@@ -114,7 +105,7 @@ func (p *productController) DeleteProduct(ctx *gin.Context) {
 		return
 	}
 
-	deletedProduct, _ := p.ProductHandler.DeleteProduct(productID)
+	deletedProduct, _ := handlers.DeleteProductHandler(productID)
 	if deletedProduct == nil {
 		response := model.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
