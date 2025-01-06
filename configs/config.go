@@ -56,7 +56,7 @@ func init() {
 			SSLmode:  viper.GetString("db.sslmode"),
 		},
 	}
-	if os.Getenv("ENV") == "local" {
+	if os.Getenv("MODE") == "DEBUG" {
 		cfg = &config{
 			API: APIConfig{
 				Port: viper.GetString("local_api.port"),

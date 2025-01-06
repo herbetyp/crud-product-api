@@ -2,6 +2,7 @@ package server
 
 import (
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/herbetyp/crud-product-api/configs"
@@ -23,8 +24,11 @@ func InitServer() Server {
 
 func (s *Server) Run() {
 	router := routes.ConfigRoutes(s.server)
-
 	log.Printf("Server running at port: %v", s.port)
-	// log.Fatal(router.Run(":" + s.port))
-	log.Fatal(router.Run(":5000"))
+
+	if !(os.Getenv("MODE") == "DEBUG") {
+		log.Fatal(router.Run(":" + s.port))
+	} else {
+		log.Fatal(router.Run(":5000"))
+	}
 }
