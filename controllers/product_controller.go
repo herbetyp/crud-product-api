@@ -53,11 +53,11 @@ func GetProductByIdController(ctx *gin.Context) {
 		return
 	}
 	product, err := handlers.GetProductByIdHandler(productID)
-	if err != nil {
+	if (product.ID != 0 && err != nil) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if (product == &models.Product{}) {
+	if (product.ID == 0) {
 		response := models.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
 		return
@@ -89,7 +89,7 @@ func UpdateProductController(ctx *gin.Context) {
 	}
 
 	updatedProductId, err := handlers.UpdateProductHandler(productID, product)
-	if err != nil {
+	if (updatedProductId != 0 && err != nil) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

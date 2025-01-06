@@ -46,6 +46,9 @@ func CreateProductRepository(product models.Product) (int, error) {
 
 	err = query.QueryRow(product.Name, product.Price, product.Code, product.Qtd, product.Unity).Scan(&id)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, err
+		}
 		fmt.Println(err)
 		return 0, err
 	}
@@ -67,10 +70,10 @@ func GetProductByIdRepository(id int) (*models.Product, error) {
 		&product.Qtd, &product.Unity, &product.CreatedAt, &product.UpdatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, nil
+			return &models.Product{}, err
 		}
 		fmt.Println(err)
-		return nil, err
+		return &models.Product{}, err
 	}
 	query.Close()
 	return &product, nil
@@ -78,16 +81,16 @@ func GetProductByIdRepository(id int) (*models.Product, error) {
 
 func UpdateProductRepository(id int, product models.Product) (int, error) {
 	db := database.ConnectDB()
-	query, err := db.Prepare("UPDATE products SET name = $1, price = $2 WHERE id = $3")
+	query, err := db.Prepare("UPDATE products SET name = $1, price = $2, code = $3, qtd = $4, unity = $5 WHERE id = $6 RETURNING id")
 	if err != nil {
 		fmt.Println(err)
 		return 0, err
 	}
 
-	_, err = query.Exec(product.Name, product.Price, id)
+	err = query.QueryRow(product.Name, product.Price, product.Code, product.Qtd, product.Unity, id).Scan(&id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return 0, nil
+			return 0, err
 		}
 		fmt.Println(err)
 		return 0, err
