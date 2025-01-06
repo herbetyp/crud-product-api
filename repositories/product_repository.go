@@ -21,7 +21,8 @@ func GetProductsRepository() ([]models.Product, error) {
 	var productObj models.Product
 
 	for rows.Next() {
-		err := rows.Scan(&productObj.ID, &productObj.Name, &productObj.Price, &productObj.CreatedAt, &productObj.UpdatedAt, &productObj.Code, &productObj.Qtd, &productObj.Unity)
+		err := rows.Scan(&productObj.ID, &productObj.Name, &productObj.Price, &productObj.Code, 
+			&productObj.Qtd, &productObj.Unity, &productObj.CreatedAt, &productObj.UpdatedAt)
 		if err != nil {
 			fmt.Println(err)
 			return []models.Product{}, err
@@ -36,7 +37,8 @@ func GetProductsRepository() ([]models.Product, error) {
 func CreateProductRepository(product models.Product) (int, error) {
 	var id int
 	db := database.ConnectDB()
-	query, err := db.Prepare("INSERT INTO products (name, price, code, qtd, unity) VALUES ($1, $2, $3, $4, $5) RETURNING id")
+	query, err := db.Prepare("INSERT INTO products (name, price, code, qtd, unity)" + 
+					"VALUES ($1, $2, $3, $4, $5) RETURNING id")
 	if err != nil {
 		fmt.Println(err)
 		return 0, err
@@ -61,7 +63,8 @@ func GetProductByIdRepository(id int) (*models.Product, error) {
 
 	var product models.Product
 
-	err = query.QueryRow(id).Scan(&product.ID, &product.Name, &product.Price, &product.Code, &product.Qtd, &product.Unity, &product.CreatedAt, &product.UpdatedAt)
+	err = query.QueryRow(id).Scan(&product.ID, &product.Name, &product.Price, &product.Code,
+		&product.Qtd, &product.Unity, &product.CreatedAt, &product.UpdatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
