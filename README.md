@@ -14,7 +14,8 @@
 - [x] List One Product
 - [x] Update Product
 - [x] Delete Product
-- [x] Use [viper](https://github.com/spf13/viper) library for app config and **.env** file for docker-compose
+- [x] Use [Viper](https://github.com/spf13/viper) library for app config and **.env** file for docker-compose
+- [ ] Use [GORM](https://gorm.io/index.html) library for manager database 
 
 ### Run localy application:
 [Docker](https://www.docker.com/) **with docker compose module** is required

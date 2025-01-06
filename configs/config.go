@@ -2,6 +2,7 @@ package configs
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -31,11 +32,6 @@ func GetConfig() *config {
 }
 
 func init() {
-	viper.SetDefault("api.port", "3000")
-	viper.SetDefault("db.host", "localhost")
-	viper.SetDefault("db.port", "5432")
-	viper.SetDefault("db.sslmode", "disable")
-
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("toml")
@@ -59,5 +55,20 @@ func init() {
 			DBName:   viper.GetString("db.dbname"),
 			SSLmode:  viper.GetString("db.sslmode"),
 		},
+	}
+	if os.Getenv("ENV") == "local" {
+		cfg = &config{
+			API: APIConfig{
+				Port: viper.GetString("local_api.port"),
+			},
+			DB: DBConfig{
+				Host:     viper.GetString("local_db.host"),
+				Port:     viper.GetInt("local_db.port"),
+				User:     viper.GetString("local_db.user"),
+				Password: viper.GetString("local_db.password"),
+				DBName:   viper.GetString("local_db.dbname"),
+				SSLmode:  viper.GetString("local_db.sslmode"),
+			},
+		}
 	}
 }

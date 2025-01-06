@@ -7,9 +7,27 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/herbetyp/crud-product-api/handlers"
-	"github.com/herbetyp/crud-product-api/model"
+	"github.com/herbetyp/crud-product-api/models"
+	"github.com/herbetyp/crud-product-api/repositories"
 )
 
+
+func CreateProductController(ctx *gin.Context) {
+	var product models.Product
+	err := ctx.BindJSON(&product)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+	newProductId, err := handlers.CreateProductHandler(product)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	var newProduct *models.Product
+	newProduct, _ = repositories.GetProductByIdRepository(newProductId)
+	ctx.JSON(http.StatusCreated, newProduct)
+}
 
 func GetProductsController(ctx *gin.Context) {
 	products, err := handlers.GetProductsHandler()
@@ -20,38 +38,27 @@ func GetProductsController(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, products)
 }
 
-func CreateProductController(ctx *gin.Context) {
-	var product model.Product
-	err := ctx.BindJSON(&product)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
-		return
-	}
-	insertedProduct, err := handlers.CreateProductHandler(product)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	ctx.JSON(http.StatusCreated, insertedProduct)
-}
-
 func GetProductByIdController(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if (id == "") {
-		response := model.Response{Message: "Missing product ID"}
+		response := models.Response{Message: "Missing product ID"}
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	productID, err := strconv.Atoi(id)
 	if err != nil {
-		response := model.Response{Message: "Invalid product ID. Only integer are allowed"}
+		response := models.Response{Message: "Invalid product ID. Only integer are allowed"}
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	product, _ := handlers.GetProductByIdHandler(productID)
-	if product == nil {
-		response := model.Response{Message: "Product not found"}
+	product, err := handlers.GetProductByIdHandler(productID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if (product == &models.Product{}) {
+		response := models.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
 		return
 	}
@@ -61,56 +68,66 @@ func GetProductByIdController(ctx *gin.Context) {
 func UpdateProductController(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if (id == "") {
-		response := model.Response{Message: "Missing product ID"}
+		response := models.Response{Message: "Missing product ID"}
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	productID, err := strconv.Atoi(id)
 	if err != nil {
-		response := model.Response{Message: "Invalid product ID. Only integer are allowed"}
+		response := models.Response{Message: "Invalid product ID. Only integer are allowed"}
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	var product model.Product
+	var product models.Product
 	err = ctx.BindJSON(&product)
 	if err != nil {
-		response := model.Response{Message: "Invalid request payload"}
+		response := models.Response{Message: "Invalid request payload"}
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	updatedProduct, _ := handlers.UpdateProductHandler(productID, product)
-	if updatedProduct == (model.Product{}) {
-		response := model.Response{Message: "Product not found"}
+	updatedProductId, err := handlers.UpdateProductHandler(productID, product)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if (updatedProductId == 0) {
+		response := models.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
 		return
 	}
+	var updatedProduct *models.Product
+	updatedProduct, _ = repositories.GetProductByIdRepository(updatedProductId)
 	ctx.JSON(http.StatusOK, updatedProduct)
 }
 
 func DeleteProductController(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if (id == "") {
-		response := model.Response{Message: "Missing product ID"}
+		response := models.Response{Message: "Missing product ID"}
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	productID, err := strconv.Atoi(id)
 	if err != nil {
-		response := model.Response{Message: "Invalid product ID. Only integer are allowed"}
+		response := models.Response{Message: "Invalid product ID. Only integer are allowed"}
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	deletedProduct, _ := handlers.DeleteProductHandler(productID)
-	if deletedProduct == nil {
-		response := model.Response{Message: "Product not found"}
+	deletedProductId, err := handlers.DeleteProductHandler(productID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if (deletedProductId == 0) {
+		response := models.Response{Message: "Product not found"}
 		ctx.JSON(http.StatusNotFound, response)
 		return
 	}
-	response := model.Response{Message: "Product deleted successfully"}
+	response := models.Response{Message: "Product deleted successfully"}
 	ctx.JSON(http.StatusOK, response)
 }

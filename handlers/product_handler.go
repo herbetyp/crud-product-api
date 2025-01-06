@@ -1,49 +1,47 @@
 package handlers
 
 import (
-	"github.com/herbetyp/crud-product-api/model"
-	"github.com/herbetyp/crud-product-api/repository"
+	"github.com/herbetyp/crud-product-api/models"
+	"github.com/herbetyp/crud-product-api/repositories"
 )
 
 
-func GetProductsHandler() ([]model.Product, error) {
-	return repository.GetProductsRepository()
+func GetProductsHandler() ([]models.Product, error) {
+	return repositories.GetProductsRepository()
 }
 
-func CreateProductHandler(product model.Product) (model.Product, error) {
-	productId, err := repository.CreateProductRepository(product)
+func CreateProductHandler(product models.Product) (int, error) {
+	newProductId, err := repositories.CreateProductRepository(product)
 	if err != nil {
-		return model.Product{}, err
+		return 0, err
 	}
 
-	product.ID = productId
-	return product, nil
+	return newProductId, nil
 }
 
-func GetProductByIdHandler(id int) (*model.Product, error) {
-	retriveProduct, err := repository.GetProductByIdRepository(id)
+func GetProductByIdHandler(id int) (*models.Product, error) {
+	getProduct, err := repositories.GetProductByIdRepository(id)
 	if err != nil {
-		return nil, err
+		return &models.Product{}, err
 	}
 
-	return retriveProduct, nil
+	return getProduct, nil
 }
 
-func UpdateProductHandler(id int, product model.Product) (model.Product, error) {
-	updatedProductId, err := repository.UpdateProductRepository(id, product)
+func UpdateProductHandler(id int, product models.Product) (int, error) {
+	updatedProductId, err := repositories.UpdateProductRepository(id, product)
 	if err != nil {
-		return model.Product{}, err
+		return 0, err
 	}
 
-	product.ID = updatedProductId
-	return product, nil
+	return updatedProductId, nil
 }
 
-func DeleteProductHandler(id int) (*model.Product, error) {
-	deletedProduct, err := repository.DeleteProductRepository(id)
+func DeleteProductHandler(id int) (int, error) {
+	deletedProductId, err := repositories.DeleteProductRepository(id)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	return deletedProduct, nil
+	return deletedProductId, nil
 }
