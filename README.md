@@ -13,8 +13,9 @@
 - [PostgreSQL](https://www.postgresql.org/)
 - [Docker](https://www.docker.com/)
 - [Gin Web Framwork](https://github.com/gin-gonic/gin)
-<!-- - [GORM](https://gorm.io/index.html) -->
-<!-- - [Swagger](https://swagger.io/) -->
+<!-- - [GORM](https://gorm.io/index.html)
+- [Swagger](https://swagger.io/) (documentation)
+- [Heroku](https://www.heroku.com/) (cloud platform) -->
 
 
 ### API Features:
@@ -27,10 +28,10 @@
 - [x] List One Product
 - [x] Update Product
 - [x] Delete Product
-- [x] Use [Viper](https://github.com/spf13/viper) library for app config and ***.env** file for docker-compose
-- [ ] Use [GORM](https://gorm.io/index.html) library for manager database
-- [ ] Publish API in [Heroku](https://www.heroku.com/) Platform
-- [ ] Documentation with [Swagger](https://swagger.io/)
+- [x] Use **Viper** library for app config and ***.env** file for docker-compose
+- [ ] Use **GORM** library for manager Database (*__discovery__*) 
+- [ ] Publish API in **Heroku** Platform
+- [ ] Documentation with **Swagger**
 
 ### Run localy application:
 [Docker](https://www.docker.com/) **with docker compose module**
