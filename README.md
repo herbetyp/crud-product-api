@@ -7,8 +7,8 @@
 >API for product inventory management.
 
 ### API Features:
-- [ ] Authentication Endpoint
-- [ ] Authorization from **JWT Bearer token**
+- [x] Authentication Endpoint
+- [x] Authorization from **JWT Bearer token**
 - [x] Create Product
 - [x] List All Products
 - [x] List One Product
