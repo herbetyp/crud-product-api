@@ -19,7 +19,7 @@ func Auth() gin.HandlerFunc {
 		}
 
 		tokenString := authHeader[len(BearerScheme):]
-		if !services.NewJWTService().ValidateToken(tokenString) {
+		if !services.ValidateToken(tokenString) {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}

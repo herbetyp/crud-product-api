@@ -12,6 +12,7 @@ var cfg *config
 type config struct {
 	API APIConfig
 	DB  DBConfig
+	JWT JWTConfig
 }
 
 type APIConfig struct {
@@ -25,6 +26,10 @@ type DBConfig struct {
 	Password string
 	DBName   string
 	SSLmode  string
+}
+
+type JWTConfig struct {
+	SecretKey string
 }
 
 func GetConfig() *config {
@@ -55,6 +60,9 @@ func init() {
 			DBName:   viper.GetString("db.dbname"),
 			SSLmode:  viper.GetString("db.sslmode"),
 		},
+		JWT: JWTConfig{
+			SecretKey: viper.GetString("jwt.secret_key"),
+		},
 	}
 	if os.Getenv("MODE") == "DEBUG" {
 		cfg = &config{
@@ -68,6 +76,9 @@ func init() {
 				Password: viper.GetString("local_db.password"),
 				DBName:   viper.GetString("local_db.dbname"),
 				SSLmode:  viper.GetString("local_db.sslmode"),
+			},
+			JWT: JWTConfig{
+				SecretKey: viper.GetString("local_jwt.secret_key"),
 			},
 		}
 	}

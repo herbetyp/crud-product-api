@@ -16,7 +16,7 @@ func LoginHandler(l *models.Login) (string, error) {
 		return "", err
 	}
 
-	token, err := services.NewJWTService().GenerateToken(user.ID)
+	token, err := services.GenerateToken(user.ID)
 	if err != nil {
 		return "", err
 	}
