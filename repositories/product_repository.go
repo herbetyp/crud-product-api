@@ -65,7 +65,6 @@ func GetProductByIdRepository(id int) (*models.Product, error) {
 	}
 
 	var product models.Product
-
 	err = query.QueryRow(id).Scan(&product.ID, &product.Name, &product.Price, &product.Code,
 		&product.Qtd, &product.Unity, &product.CreatedAt, &product.UpdatedAt)
 	if err != nil {

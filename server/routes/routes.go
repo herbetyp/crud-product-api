@@ -3,12 +3,13 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/herbetyp/crud-product-api/controllers"
+	"github.com/herbetyp/crud-product-api/server/middlewares"
 )
 
 func ConfigRoutes(router *gin.Engine) *gin.Engine {
 	base_url := router.Group("/v1")
 
-	products := base_url.Group("/products")
+	products := base_url.Group("/products", middlewares.Auth())
 	users := base_url.Group("/users")
 	{
 		base_url.GET("/ping", func(ctx *gin.Context) { ctx.JSON(200, gin.H{"message": "pong"}) })

@@ -1,7 +1,24 @@
 package handlers
 
-import "github.com/herbetyp/crud-product-api/repositories"
+import (
+	"github.com/herbetyp/crud-product-api/models"
+	"github.com/herbetyp/crud-product-api/repositories"
+	"github.com/herbetyp/crud-product-api/services"
+)
 
-func LoginHandler() {
-	repositories.UsersLoginRepository()
+func LoginHandler(l *models.Login) (string, error) {
+	user, err := repositories.UsersLoginRepository(l)
+	if err != nil {
+		return "", err
+	}
+
+	if user.Password != services.SHA256Encoder(l.Password) {
+		return "", err
+	}
+
+	token, err := services.NewJWTService().GenerateToken(user.ID)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }
