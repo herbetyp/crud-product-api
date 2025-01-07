@@ -27,14 +27,20 @@
 - [x] List One Product
 - [x] Update Product
 - [x] Delete Product
-- [x] Use [Viper](https://github.com/spf13/viper) library for app config and **.env** file for docker-compose
+- [x] Use [Viper](https://github.com/spf13/viper) library for app config and ***.env** file for docker-compose
 - [ ] Use [GORM](https://gorm.io/index.html) library for manager database
 - [ ] Publish API in [Heroku](https://www.heroku.com/) Platform
 - [ ] Documentation with [Swagger](https://swagger.io/)
 
 ### Run localy application:
-[Docker](https://www.docker.com/) **with docker compose module** is required
+[Docker](https://www.docker.com/) **with docker compose module**
 
 ```bash
 docker compose up -d # exposed in port 3000
+```
+OR from Local Server (Gin)
+```bash
+export MODE="DEBUG"
+docker compose up -d api_db
+go run cmd/main.go # exposed in port 5000
 ```
