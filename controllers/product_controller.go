@@ -39,7 +39,7 @@ func GetProductsController(ctx *gin.Context) {
 }
 
 func GetProductByIdController(ctx *gin.Context) {
-	id := ctx.Param("id")
+	id := ctx.Param("product_id")
 	if (id == "") {
 		response := models.Response{Message: "Missing product ID"}
 		ctx.JSON(http.StatusBadRequest, response)
@@ -66,7 +66,7 @@ func GetProductByIdController(ctx *gin.Context) {
 }
 
 func UpdateProductController(ctx *gin.Context) {
-	id := ctx.Param("id")
+	id := ctx.Param("product_id")
 	if (id == "") {
 		response := models.Response{Message: "Missing product ID"}
 		ctx.JSON(http.StatusBadRequest, response)
@@ -104,7 +104,7 @@ func UpdateProductController(ctx *gin.Context) {
 }
 
 func DeleteProductController(ctx *gin.Context) {
-	id := ctx.Param("id")
+	id := ctx.Param("product_id")
 	if (id == "") {
 		response := models.Response{Message: "Missing product ID"}
 		ctx.JSON(http.StatusBadRequest, response)

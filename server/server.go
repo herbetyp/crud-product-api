@@ -26,7 +26,7 @@ func (s *Server) Run() {
 	router := routes.ConfigRoutes(s.server)
 	log.Printf("Server running at port: %v", s.port)
 
-	if !(os.Getenv("MODE") == "DEBUG") {
+	if !(os.Getenv("GINMODE") == "local") {
 		log.Fatal(router.Run(":" + s.port))
 	} else {
 		log.Fatal(router.Run(":5000"))

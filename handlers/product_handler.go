@@ -10,8 +10,8 @@ func GetProductsHandler() ([]models.Product, error) {
 	return repositories.GetProductsRepository()
 }
 
-func CreateProductHandler(product models.Product) (int, error) {
-	newProductId, err := repositories.CreateProductRepository(product)
+func CreateProductHandler(p models.Product) (int, error) {
+	newProductId, err := repositories.CreateProductRepository(p)
 	if err != nil {
 		return 0, err
 	}
@@ -28,8 +28,8 @@ func GetProductByIdHandler(id int) (*models.Product, error) {
 	return getProduct, nil
 }
 
-func UpdateProductHandler(id int, product models.Product) (int, error) {
-	updatedProductId, err := repositories.UpdateProductRepository(id, product)
+func UpdateProductHandler(id int, p models.Product) (int, error) {
+	updatedProductId, err := repositories.UpdateProductRepository(id, p)
 	if err != nil {
 		return 0, err
 	}

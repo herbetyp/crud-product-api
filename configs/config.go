@@ -64,7 +64,7 @@ func init() {
 			SecretKey: viper.GetString("jwt.secret_key"),
 		},
 	}
-	if os.Getenv("MODE") == "DEBUG" {
+	if os.Getenv("GINMODE") == "local" {
 		cfg = &config{
 			API: APIConfig{
 				Port: viper.GetString("local_api.port"),

@@ -12,7 +12,7 @@ import (
 
 func ConnectDB() *sql.DB {
 	var psqlInfo string
-	if !(os.Getenv("MODE") == "DEBUG") {
+	if !(os.Getenv("GINMODE") == "local") {
 		conf := configs.GetConfig()
 		psqlInfo = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		conf.DB.Host, conf.DB.Port, conf.DB.User, conf.DB.Password, conf.DB.DBName, conf.DB.SSLmode)
@@ -33,6 +33,6 @@ func ConnectDB() *sql.DB {
 		panic(err)
 	}
 	
-	fmt.Printf("Connected to database")
+	fmt.Printf("Connected to database\n")
 	return conn
 }

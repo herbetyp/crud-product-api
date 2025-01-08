@@ -9,19 +9,21 @@ import (
 func ConfigRoutes(router *gin.Engine) *gin.Engine {
 	base_url := router.Group("/v1")
 
-	products := base_url.Group("/products", middlewares.Auth())
+	products := base_url.Group("/products", middlewares.AuthMiddleware())
 	users := base_url.Group("/users")
 	{
 		base_url.GET("/ping", func(ctx *gin.Context) { ctx.JSON(200, gin.H{"message": "pong"}) })
 
 		products.GET("", controllers.GetProductsController)
-		products.GET("/:id", controllers.GetProductByIdController)
+		products.GET("/:product_id", controllers.GetProductByIdController)
 		products.POST("", controllers.CreateProductController)
-		products.PUT("/:id", controllers.UpdateProductController)
-		products.DELETE("/:id", controllers.DeleteProductController)
+		products.PUT("/:product_id", controllers.UpdateProductController)
+		products.DELETE("/:product_id", controllers.DeleteProductController)
 
 		users.POST("/created", controllers.CreateUserContoller)
 		users.POST("/login", controllers.LoginController)
+		users.PATCH("/:user_id/pass", middlewares.AuthMiddleware(), controllers.UpdateUserController)
 	}
+
 	return router
 }

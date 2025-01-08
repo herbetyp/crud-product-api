@@ -5,7 +5,6 @@ import (
 	"fmt"
 )
 
-
 func SHA256Encoder(p string) string {
 	str := sha256.Sum256([]byte(p))
 

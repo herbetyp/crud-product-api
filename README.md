@@ -41,7 +41,7 @@ docker compose up -d # exposed in port 3000
 ```
 OR from Local Server (Gin)
 ```bash
-export MODE="DEBUG"
+export GINMODE="local"
 docker compose up -d api_db
 go run cmd/main.go # exposed in port 5000
 ```

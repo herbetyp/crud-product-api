@@ -7,10 +7,10 @@ import (
 	"github.com/herbetyp/crud-product-api/services"
 )
 
-
-func Auth() gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		const BearerScheme = "Bearer "
+
 		authHeader := ctx.GetHeader("Authorization")
 		if authHeader == "" {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
@@ -18,8 +18,15 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
+		if len(authHeader) <= len(BearerScheme) {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
+				gin.H{"error": "Invalid authorization header format"})
+			return
+		}
+		userId := ctx.Param("user_id")
+
 		tokenString := authHeader[len(BearerScheme):]
-		if !services.ValidateToken(tokenString) {
+		if !services.ValidateToken(tokenString, userId) {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}

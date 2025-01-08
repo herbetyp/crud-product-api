@@ -20,5 +20,6 @@ func LoginHandler(l *models.Login) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return token, nil
 }
