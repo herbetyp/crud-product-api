@@ -5,7 +5,6 @@ import (
 	"github.com/herbetyp/crud-product-api/repositories"
 )
 
-
 func CreateUserHandler(u models.User) (string, error) {
 	username, err := repositories.CreateUserRepository(u)
 	if err != nil {
@@ -15,8 +14,8 @@ func CreateUserHandler(u models.User) (string, error) {
 	return username, nil
 }
 
-func UpdateUserHandler(id int, p string) (int, error) {
-	userId, err := repositories.UpdateUserRepository(id, p)
+func UpdateUserPassHandler(id int, p string) (int, error) {
+	userId, err := repositories.UpdateUserPassRepository(id, p)
 	if err != nil {
 		return userId, err
 	}

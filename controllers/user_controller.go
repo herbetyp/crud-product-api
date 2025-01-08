@@ -35,7 +35,7 @@ func CreateUserContoller(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, gin.H{"message": fmt.Sprintf("User %s created", user.Username)})
 }
 
-func UpdateUserController(ctx *gin.Context) {
+func UpdateUserPassController(ctx *gin.Context) {
 	id := ctx.Param("user_id")
 	if id == "" {
 		response := models.Response{Message: "Missing user ID"}
@@ -58,7 +58,9 @@ func UpdateUserController(ctx *gin.Context) {
 		return
 	}
 
-	updatedUserId, err := handlers.UpdateUserHandler(userID, user.Password)
+	user.Password = services.SHA256Encoder(user.Password)
+
+	updatedUserId, err := handlers.UpdateUserPassHandler(userID, user.Password)
 	if updatedUserId != 0 && err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

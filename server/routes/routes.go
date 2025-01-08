@@ -22,7 +22,7 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 
 		users.POST("/created", controllers.CreateUserContoller)
 		users.POST("/login", controllers.LoginController)
-		users.PATCH("/:user_id/pass", middlewares.AuthMiddleware(), controllers.UpdateUserController)
+		users.PATCH("/:user_id/pass", middlewares.AuthMiddleware(), controllers.UpdateUserPassController)
 	}
 
 	return router
