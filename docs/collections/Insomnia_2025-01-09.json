@@ -1,18 +1,18 @@
 {
     "_type": "export",
     "__export_format": 4,
-    "__export_date": "2025-01-07T01:37:12.817Z",
+    "__export_date": "2025-01-09T05:31:59.480Z",
     "__export_source": "insomnia.desktop.app:v10.3.0",
     "resources": [
         {
-            "_id": "req_d9663813d5894483821c23b095f774d0",
+            "_id": "req_bdedc9de640d44c2810f770e9f0569c6",
             "parentId": "fld_00c18f563766463ab46490afd5e44511",
-            "modified": 1736204100169,
-            "created": 1736150766460,
-            "url": "localhost:{{ _.local_port }}/v1/users/pass",
-            "name": "Update Password",
+            "modified": 1736400207559,
+            "created": 1736311347602,
+            "url": "localhost:{{ _.local }}/users/5",
+            "name": "Delete User",
             "description": "",
-            "method": "PUT",
+            "method": "DELETE",
             "body": {},
             "parameters": [],
             "headers": [
@@ -21,8 +21,12 @@
                     "value": "insomnia/10.3.0"
                 }
             ],
-            "authentication": {},
-            "metaSortKey": -1736150766460,
+            "authentication": {
+                "type": "bearer",
+                "token": "{% response 'body', 'req_fc3554181deb4cdf83e6dad9c86c6e8d', 'b64::JC50b2tlbg==::46b', 'always', 60 %}",
+                "disabled": false
+            },
+            "metaSortKey": -1736311347602,
             "isPrivate": false,
             "pathParameters": [],
             "settingStoreCookies": true,
@@ -70,17 +74,57 @@
             "_type": "workspace"
         },
         {
+            "_id": "req_d9663813d5894483821c23b095f774d0",
+            "parentId": "fld_00c18f563766463ab46490afd5e44511",
+            "modified": 1736400217877,
+            "created": 1736150766460,
+            "url": "localhost:{{ _.local }}/users/5/reset-password",
+            "name": "Update Password",
+            "description": "",
+            "method": "PATCH",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n\t\"password\": \"ec3abe08cad943b781cdb9586de2fac2224y4\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                },
+                {
+                    "name": "User-Agent",
+                    "value": "insomnia/10.3.0"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{% response 'body', 'req_91365d1f5453455181523eacf362d659', 'b64::JC50b2tlbg==::46b', 'always', 60 %}",
+                "disabled": false
+            },
+            "metaSortKey": -1736150766460,
+            "isPrivate": false,
+            "pathParameters": [],
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global",
+            "_type": "request"
+        },
+        {
             "_id": "req_91365d1f5453455181523eacf362d659",
             "parentId": "fld_00c18f563766463ab46490afd5e44511",
-            "modified": 1736212555478,
+            "modified": 1736399927886,
             "created": 1736122546669,
-            "url": "localhost:{{ _.local_port }}/v1/users/login",
+            "url": "localhost:{{ _.container }}/users/login",
             "name": "Login",
             "description": "",
             "method": "POST",
             "body": {
                 "mimeType": "application/json",
-                "text": "{\n\t\"email\": \"anonymous@email.com\",\n\t\"password\": \"6bae5113e2c1486391590feab3f65e32\",\n\t\"grant_type\": \"client_credentials\"\n}"
+                "text": "{\n\t\"email\": \"anonymous-test@email.com\",\n\t\"password\": \"ec3abe08cad943b781cdb9586de2fac2224y4\",\n\t\"grant_type\": \"client_credentials\"\n}"
             },
             "parameters": [],
             "headers": [
@@ -106,17 +150,53 @@
             "_type": "request"
         },
         {
+            "_id": "req_fc3554181deb4cdf83e6dad9c86c6e8d",
+            "parentId": "fld_00c18f563766463ab46490afd5e44511",
+            "modified": 1736400133070,
+            "created": 1736399959148,
+            "url": "localhost:{{ _.container }}/users/login",
+            "name": "Login Admin",
+            "description": "",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n\t\"email\": \"anonymous@email.com\",\n\t\"password\": \"73899ecaed57909186339da0b4c73ab5c1b7fbda6ac7d11c752750333b2186fd\",\n\t\"grant_type\": \"client_credentials\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                },
+                {
+                    "name": "User-Agent",
+                    "value": "insomnia/10.3.0"
+                }
+            ],
+            "authentication": {},
+            "metaSortKey": -1736122467746.5,
+            "isPrivate": false,
+            "pathParameters": [],
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global",
+            "_type": "request"
+        },
+        {
             "_id": "req_ce034e6ed5f145d6ac1bf4c88b2405cb",
             "parentId": "fld_00c18f563766463ab46490afd5e44511",
-            "modified": 1736145651196,
+            "modified": 1736398544742,
             "created": 1736122271852,
-            "url": "localhost:{{ _.local_port }}/v1/users/created",
+            "url": "localhost:{{ _.local }}/users",
             "name": "Create User",
             "description": "",
             "method": "POST",
             "body": {
                 "mimeType": "application/json",
-                "text": "{\n\t\"username\": \"Anonymouss\",\n\t\"email\": \"anonymous@email.com\",\n\t\"password\": \"6bae5113e2c1486391590feab3f65e32\"\n}"
+                "text": "{\n\t\"username\": \"Anonymous\",\n\t\"email\": \"anonymous-test@email.com\",\n\t\"password\": \"73899ecaed57909186339da0b4c73ab5c1b7fbda6ac7d11c752750333b2186fd\"\n}"
             },
             "parameters": [],
             "headers": [
@@ -144,9 +224,9 @@
         {
             "_id": "req_c6a66316133e4284b28afb68c5434031",
             "parentId": "fld_0f883646aef7452cba3c8e96ff04c243",
-            "modified": 1736142184133,
+            "modified": 1736400336475,
             "created": 1736018316144,
-            "url": "localhost:{{ _.local_port }}/v1/products/14",
+            "url": "localhost:{{ _.local }}/products/13",
             "name": "Delete Product",
             "description": "",
             "method": "DELETE",
@@ -158,7 +238,10 @@
                     "value": "insomnia/10.3.0"
                 }
             ],
-            "authentication": {},
+            "authentication": {
+                "type": "bearer",
+                "token": "{% response 'body', 'req_91365d1f5453455181523eacf362d659', 'b64::JC50b2tlbg==::46b', 'when-expired', 1800 %}"
+            },
             "metaSortKey": -1736122388824,
             "isPrivate": false,
             "pathParameters": [],
@@ -186,28 +269,34 @@
         {
             "_id": "req_66f73e70f0124469bd7d7d85b2f221ad",
             "parentId": "fld_0f883646aef7452cba3c8e96ff04c243",
-            "modified": 1736151189377,
+            "modified": 1736400328404,
             "created": 1735995564384,
-            "url": "localhost:{{ _.local_port }}/v1/products/1",
+            "url": "localhost:{{ _.container }}/products/1",
             "name": "Update Product",
             "description": "",
             "method": "PUT",
             "body": {
                 "mimeType": "application/json",
-                "text": "{\n\t\t\"name\": \"Costela Bovina Premiun\",\n\t\t\"price\": 47.97,\n\t\t\"code\": \"01\",\n\t\t\"qtd\": 25.6,\n\t\t\"unity\": \"KG\"\n}"
+                "text": "{\n\t\"name\": \"Cupim\",\n\t\"price\": 49.99,\n\t\"code\": \"02\",\n\t\"qtd\": 40.89,\n\t\"unity\": \"KG\"\n}"
             },
             "parameters": [],
             "headers": [
                 {
                     "name": "Content-Type",
-                    "value": "application/json"
+                    "value": "application/json",
+                    "id": "pair_5486e40f0fc24ed582e8c4be16cce5d3"
                 },
                 {
                     "name": "User-Agent",
-                    "value": "insomnia/10.3.0"
+                    "value": "insomnia/10.3.0",
+                    "id": "pair_214f9d8369a1472ba14455992d1a5a0a"
                 }
             ],
-            "authentication": {},
+            "authentication": {
+                "type": "bearer",
+                "token": "{% response 'body', 'req_91365d1f5453455181523eacf362d659', 'b64::JC50b2tlbg==::46b', 'when-expired', 1800 %}",
+                "disabled": false
+            },
             "metaSortKey": -1736122388724,
             "isPrivate": false,
             "pathParameters": [],
@@ -222,9 +311,9 @@
         {
             "_id": "req_910698a3158d47fdb145a013afc4fc21",
             "parentId": "fld_0f883646aef7452cba3c8e96ff04c243",
-            "modified": 1736203813820,
+            "modified": 1736381968363,
             "created": 1735958132698,
-            "url": "localhost:{{ _.local_port }}/v1/products/6",
+            "url": "localhost:{{ _.local }}/products/4",
             "name": "Retrive Product",
             "description": "",
             "method": "GET",
@@ -233,10 +322,14 @@
             "headers": [
                 {
                     "name": "User-Agent",
-                    "value": "insomnia/10.3.0"
+                    "value": "insomnia/10.3.0",
+                    "id": "pair_57baee28b6f94f399d56ecbe9223a113"
                 }
             ],
-            "authentication": {},
+            "authentication": {
+                "type": "bearer",
+                "token": "{% response 'body', 'req_91365d1f5453455181523eacf362d659', 'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+            },
             "metaSortKey": -1736122388624,
             "isPrivate": false,
             "pathParameters": [],
@@ -251,9 +344,9 @@
         {
             "_id": "req_587f67fdba9b42b28f2b2c81434ab525",
             "parentId": "fld_0f883646aef7452cba3c8e96ff04c243",
-            "modified": 1736202655943,
+            "modified": 1736400305115,
             "created": 1735952579739,
-            "url": "localhost:{{ _.container_port }}/v1/products",
+            "url": "localhost:{{ _.container }}/products",
             "name": "Retrive All Products",
             "description": "",
             "method": "GET",
@@ -262,10 +355,15 @@
             "headers": [
                 {
                     "name": "User-Agent",
-                    "value": "insomnia/10.3.0"
+                    "value": "insomnia/10.3.0",
+                    "id": "pair_7eaabb84eddc4363aade45f5499ed8ff"
                 }
             ],
-            "authentication": {},
+            "authentication": {
+                "type": "bearer",
+                "token": "{% response 'body', 'req_91365d1f5453455181523eacf362d659', 'b64::JC50b2tlbg==::46b', 'when-expired', 1800 %}",
+                "disabled": false
+            },
             "metaSortKey": -1736122388524,
             "isPrivate": false,
             "pathParameters": [],
@@ -280,15 +378,15 @@
         {
             "_id": "req_a3d65b1f1668460bb95c4b4ef01f7d33",
             "parentId": "fld_0f883646aef7452cba3c8e96ff04c243",
-            "modified": 1736148055984,
+            "modified": 1736400343872,
             "created": 1735957649298,
-            "url": "localhost:{{ _.local_port }}/v1/products",
+            "url": "localhost:{{ _.local }}/products",
             "name": "Insert Product",
             "description": "",
             "method": "POST",
             "body": {
                 "mimeType": "application/json",
-                "text": "{\n\t\"name\": \"Alcatradssa\",\n\t\"price\": 47.87,\n\t\"code\": \"03\",\n\t\"qtd\": 25.60,\n\t\"unity\": \"KG\"\n}"
+                "text": "{\n\t\"name\": \"Alcatra\",\n\t\"price\": 39.99,\n\t\"code\": \"03\",\n\t\"qtd\": 49.89,\n\t\"unity\": \"KG\"\n}"
             },
             "parameters": [],
             "headers": [
@@ -301,7 +399,10 @@
                     "value": "insomnia/10.3.0"
                 }
             ],
-            "authentication": {},
+            "authentication": {
+                "type": "bearer",
+                "token": "{% response 'body', 'req_91365d1f5453455181523eacf362d659', 'b64::JC50b2tlbg==::46b', 'when-expired', 1800 %}"
+            },
             "metaSortKey": -1736122388324,
             "isPrivate": false,
             "pathParameters": [],
@@ -316,9 +417,9 @@
         {
             "_id": "req_3b4d84c0eff64b038ee6b0d03c8eb1c2",
             "parentId": "fld_35b34f357b1e4cb3a94d7ed04ba20ede",
-            "modified": 1736150732143,
+            "modified": 1736400351856,
             "created": 1735945575259,
-            "url": "localhost:{{ _.local_port }}/v1/ping",
+            "url": "localhost:{{ _.local }}/v1/ping",
             "name": "Test Connection Server",
             "description": "",
             "method": "GET",
@@ -345,12 +446,12 @@
         {
             "_id": "env_99d30891da4bdcebc63947a8fc17f076de878684",
             "parentId": "wrk_scratchpad",
-            "modified": 1736036917315,
+            "modified": 1736304076918,
             "created": 1735252565691,
             "name": "Base Environment",
             "data": {
-                "local_port": "5000",
-                "container_port": "3000"
+                "local": "5000/v1",
+                "container": "3000/v1"
             },
             "dataPropertyOrder": null,
             "color": null,
@@ -360,15 +461,15 @@
             "kvPairData": [
                 {
                     "id": "envPair_aa56d3a2ea3449d7801621631c7572ee",
-                    "name": "local_port",
-                    "value": "5000",
+                    "name": "local",
+                    "value": "5000/v1",
                     "type": "str",
                     "enabled": true
                 },
                 {
                     "id": "envPair_7a87d0cbb9924b678a159becddcf091e",
-                    "name": "container_port",
-                    "value": "3000",
+                    "name": "container",
+                    "value": "3000/v1",
                     "type": "str",
                     "enabled": true
                 }
