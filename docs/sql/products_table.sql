@@ -1,11 +1,18 @@
-create table products (
-	id serial primary key,
-	name varchar(50) not null,
-	price numeric(10, 2) not null,
-	code varchar(50) not null,
-    qtd numeric(10, 2) not null,
-	unity varchar(50) not null,
-	created_at timestamp with time zone default now(),
-	updated_at timestamp with time zone default now(),
-	unique (name, code)
+CREATE TABLE products (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(50) NOT NULL,
+	price NUMERIC(10, 2) NOT NULL,
+	code VARCHAR(50) NOT NULL,
+    qtd NUMERIC(10, 2) NOT NULL,
+	unity VARCHAR(50) NOT NULL,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+	UNIQUE (name, code)
 );
+
+CREATE TRIGGER set_updated_at
+    BEFORE UPDATE
+    ON public.products 
+    FOR EACH ROW
+EXECUTE PROCEDURE set_updated_at()
+;
