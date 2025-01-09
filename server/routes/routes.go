@@ -20,9 +20,10 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 		products.PUT("/:product_id", controllers.UpdateProductController)
 		products.DELETE("/:product_id", controllers.DeleteProductController)
 
-		users.POST("/created", controllers.CreateUserContoller)
+		users.POST("", controllers.CreateUserContoller)
 		users.POST("/login", controllers.LoginController)
-		users.PATCH("/:user_id/pass", middlewares.AuthMiddleware(), controllers.UpdateUserPassController)
+		users.PATCH("/:user_id/reset-password", middlewares.AuthMiddleware(), controllers.UpdateUserPassController)
+		users.DELETE("/:user_id", middlewares.AuthMiddleware(), controllers.DeleteUserController)
 	}
 
 	return router

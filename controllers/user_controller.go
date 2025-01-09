@@ -74,3 +74,33 @@ func UpdateUserPassController(ctx *gin.Context) {
 
 	ctx.AbortWithStatus(http.StatusOK)
 }
+
+
+func DeleteUserController(ctx *gin.Context) {
+	id := ctx.Param("user_id")
+	if id == "" {
+		response := models.Response{Message: "Missing user ID"}
+		ctx.JSON(http.StatusBadRequest, response)
+	}
+
+	userID, err := strconv.Atoi(id)
+	if err != nil {
+		response := models.Response{Message: "Invalid user ID. Only integer are allowed"}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	deletedUserId, err := handlers.DeleteUserHandler(userID)
+	if deletedUserId != 0 && err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if deletedUserId == 0 {
+		response := models.Response{Message: "User not found"}
+		ctx.JSON(http.StatusNotFound, response)
+		return
+	}
+
+	ctx.AbortWithStatus(http.StatusOK)
+}

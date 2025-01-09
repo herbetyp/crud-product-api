@@ -20,7 +20,7 @@
 
 ### API Features:
 - [x] Create User Enpoint
-- [ ] Reset Password Endpoint
+- [x] Reset Password Endpoint
 - [x] OAuth Authentication Endpoint (*_grant_type=client_credentials_*)
 - [x] Authorization from **JWT Bearer Token**
 - [x] Create Product

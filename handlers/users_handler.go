@@ -17,7 +17,16 @@ func CreateUserHandler(u models.UserModel) (string, error) {
 func UpdateUserPassHandler(id int, p string) (int, error) {
 	userId, err := repositories.UpdateUserPassRepository(id, p)
 	if err != nil {
-		return userId, err
+		return 0, err
+	}
+
+	return userId, nil
+}
+
+func DeleteUserHandler(id int) (int, error) {
+	userId, err := repositories.DeleteUserRepository(id)
+	if err != nil {
+		return 0, err
 	}
 
 	return userId, nil

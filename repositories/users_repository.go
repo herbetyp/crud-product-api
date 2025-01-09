@@ -63,3 +63,23 @@ func UpdateUserPassRepository(id int, p string) (int, error) {
 	query.Close()
 	return id, nil
 }
+
+func DeleteUserRepository(id int) (int, error) {
+	db := database.ConnectDB()
+	query, err := db.Prepare("DELETE FROM users WHERE id = $1 RETURNING id")
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+
+	err = query.QueryRow(id).Scan(&id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+		fmt.Println(err)
+		return 0, err
+	}
+
+	return id, nil
+}
