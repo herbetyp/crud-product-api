@@ -12,7 +12,7 @@ import (
 )
 
 func CreateUserContoller(ctx *gin.Context) {
-	var user models.User
+	var user models.UserModel
 
 	err := ctx.ShouldBindJSON(&user)
 	if err != nil {
@@ -22,7 +22,7 @@ func CreateUserContoller(ctx *gin.Context) {
 		return
 	}
 
-	user.Password = services.SHA256Encoder(user.Password)
+	user.Password = services.SHA512Encoder(user.Password)
 
 	_, err = handlers.CreateUserHandler(user)
 	if err != nil {
@@ -50,7 +50,7 @@ func UpdateUserPassController(ctx *gin.Context) {
 		return
 	}
 
-	var user models.User
+	var user models.UserModel
 	err = ctx.BindJSON(&user)
 	if err != nil {
 		response := models.Response{Message: "Invalid request payload"}
@@ -58,7 +58,7 @@ func UpdateUserPassController(ctx *gin.Context) {
 		return
 	}
 
-	user.Password = services.SHA256Encoder(user.Password)
+	user.Password = services.SHA512Encoder(user.Password)
 
 	updatedUserId, err := handlers.UpdateUserPassHandler(userID, user.Password)
 	if updatedUserId != 0 && err != nil {

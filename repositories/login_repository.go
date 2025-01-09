@@ -7,7 +7,7 @@ import (
 	"github.com/herbetyp/crud-product-api/models"
 )
 
-func UsersLoginRepository(l *models.Login) (*models.User, error) {
+func UsersLoginRepository(l *models.Login) (*models.UserModel, error) {
 	db := database.ConnectDB()
 	query, err := db.Prepare("SELECT * FROM users WHERE email = $1")
 	if err != nil {
@@ -15,8 +15,8 @@ func UsersLoginRepository(l *models.Login) (*models.User, error) {
 		return nil, err
 	}
 
-	var user models.User
-	err = query.QueryRow(l.Email).Scan(&user.ID, &user.Username, &user.Email, 
+	var user models.UserModel
+	err = query.QueryRow(l.Email).Scan(&user.ID, &user.Username, &user.Email,
 		&user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err

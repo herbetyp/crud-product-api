@@ -1,13 +1,14 @@
 package repositories
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/herbetyp/crud-product-api/database"
 	"github.com/herbetyp/crud-product-api/models"
 )
 
-func CreateUserRepository(u models.User) (string, error) {
+func CreateUserRepository(u models.UserModel) (string, error) {
 	var username string
 	db := database.ConnectDB()
 	query, err := db.Prepare("INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING username")
@@ -24,7 +25,7 @@ func CreateUserRepository(u models.User) (string, error) {
 	return username, nil
 }
 
-func GetUserByIdRepository(id int) (*models.User, error) {
+func GetUserByIdRepository(id int) (*models.UserModel, error) {
 	db := database.ConnectDB()
 	query, err := db.Prepare("SELECT * FROM users WHERE id = $1")
 	if err != nil {
@@ -32,7 +33,7 @@ func GetUserByIdRepository(id int) (*models.User, error) {
 		return nil, err
 	}
 
-	var user models.User
+	var user models.UserModel
 	err = query.QueryRow(id).Scan(&user.ID, &user.Username, &user.Email,
 		&user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
@@ -53,6 +54,9 @@ func UpdateUserPassRepository(id int, p string) (int, error) {
 
 	err = query.QueryRow(p, id).Scan(&id)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
 		fmt.Println(err)
 		return 0, err
 	}

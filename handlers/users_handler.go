@@ -5,7 +5,7 @@ import (
 	"github.com/herbetyp/crud-product-api/repositories"
 )
 
-func CreateUserHandler(u models.User) (string, error) {
+func CreateUserHandler(u models.UserModel) (string, error) {
 	username, err := repositories.CreateUserRepository(u)
 	if err != nil {
 		return username, err

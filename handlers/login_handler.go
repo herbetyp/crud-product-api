@@ -12,7 +12,7 @@ func LoginHandler(l *models.Login) (string, error) {
 		return "", err
 	}
 
-	if user.Password != services.SHA256Encoder(l.Password) {
+	if user.Password != services.SHA512Encoder(l.Password) {
 		return "", err
 	}
 
