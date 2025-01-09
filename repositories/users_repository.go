@@ -35,7 +35,7 @@ func GetUserByIdRepository(id int) (*models.UserModel, error) {
 
 	var user models.UserModel
 	err = query.QueryRow(id).Scan(&user.ID, &user.Username, &user.Email,
-		&user.Password, &user.CreatedAt, &user.UpdatedAt)
+		&user.Password, &user.UToken, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err

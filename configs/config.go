@@ -10,9 +10,10 @@ import (
 var cfg *config
 
 type config struct {
-	API APIConfig
-	DB  DBConfig
-	JWT JWTConfig
+	API   APIConfig
+	DB    DBConfig
+	JWT   JWTConfig
+	ADMIN AdminConfig
 }
 
 type APIConfig struct {
@@ -30,6 +31,10 @@ type DBConfig struct {
 
 type JWTConfig struct {
 	SecretKey string
+}
+
+type AdminConfig struct {
+	UToken string
 }
 
 func GetConfig() *config {
@@ -63,6 +68,9 @@ func init() {
 		JWT: JWTConfig{
 			SecretKey: viper.GetString("jwt.secret_key"),
 		},
+		ADMIN: AdminConfig{
+			UToken: viper.GetString("admin.id"),
+		},
 	}
 	if os.Getenv("GINMODE") == "local" {
 		cfg = &config{
@@ -79,6 +87,9 @@ func init() {
 			},
 			JWT: JWTConfig{
 				SecretKey: viper.GetString("local_jwt.secret_key"),
+			},
+			ADMIN: AdminConfig{
+				UToken: viper.GetString("local_admin.id"),
 			},
 		}
 	}

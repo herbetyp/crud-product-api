@@ -22,8 +22,8 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 
 		users.POST("", controllers.CreateUserContoller)
 		users.POST("/login", controllers.LoginController)
-		users.PATCH("/:user_id/reset-password", middlewares.AuthMiddleware(), controllers.UpdateUserPassController)
-		users.DELETE("/:user_id", middlewares.AuthMiddleware(), controllers.DeleteUserController)
+		users.PATCH("/:user_id/reset-password", middlewares.AuthMiddlewareUser(), controllers.UpdateUserPassController)
+		users.DELETE("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.DeleteUserController)
 	}
 
 	return router

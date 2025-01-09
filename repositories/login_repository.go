@@ -17,7 +17,7 @@ func UsersLoginRepository(l *models.Login) (*models.UserModel, error) {
 
 	var user models.UserModel
 	err = query.QueryRow(l.Email).Scan(&user.ID, &user.Username, &user.Email,
-		&user.Password, &user.CreatedAt, &user.UpdatedAt)
+		&user.Password, &user.CreatedAt, &user.UpdatedAt, &user.UToken)
 	if err != nil {
 		return nil, err
 	}

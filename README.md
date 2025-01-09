@@ -32,6 +32,7 @@
 - [ ] Use **GORM** library for manager Database (*__discovery__*) 
 - [ ] Publish API in **Heroku** Platform
 - [ ] Documentation with **Swagger**
+- [ ] Log System
 
 ### Run localy application:
 [Docker](https://www.docker.com/) **with docker compose module**
