@@ -33,6 +33,7 @@
 - [ ] Publish API in **Heroku** Platform
 - [ ] Documentation with **Swagger**
 - [ ] Log System
+- [ ] Cache system
 
 ### Run localy application:
 [Docker](https://www.docker.com/) **with docker compose module**

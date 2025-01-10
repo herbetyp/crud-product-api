@@ -4,36 +4,28 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gofrs/uuid"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/herbetyp/crud-product-api/configs"
 )
 
-type Claims struct {
-	Sub string `json:"sub"`
-	JTI string `json:"jti"`
-	jwt.StandardClaims
-}
-
 func GenerateToken(id int) (string, error) {
 	conf := configs.GetConfig()
-	claims := &Claims{
-		Sub: fmt.Sprint(id),
-		JTI: uuid.Must(uuid.NewV4()).String(),
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
-			Issuer:    "auth-product-api",
-			IssuedAt:  time.Now().Unix(),
-			Audience:  "product-api",
-		},
-	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
+		"sub": fmt.Sprint(id),          
+		"iss": "auth-product-api",          
+		"aud": "api://product-api",    
+		"exp": time.Now().Add(time.Hour).Unix(),
+		"iat": time.Now().Unix(),
+		"jti": uuid.Must(uuid.NewRandom()).String(),
+	})
+
 	t, err := token.SignedString([]byte(conf.JWT.SecretKey))
-
 	if err != nil {
 		return "", err
 	}
+
 	return t, nil
 }
 
@@ -56,7 +48,7 @@ func ValidateToken(token string, uid string) (bool, string) {
 
 	// Validate token claims
 	claims, _ := tokenDecoded.Claims.(jwt.MapClaims)
-	if claims["iss"] != "auth-product-api" || claims["aud"] != "product-api" {
+	if claims["iss"] != "auth-product-api" || claims["aud"] != "api://product-api" {
 		fmt.Printf("invalid claims\n")
 		return false, ""
 	}
