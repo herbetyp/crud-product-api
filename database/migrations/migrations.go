@@ -1,10 +1,11 @@
 package migrations
 
 import (
-	model "github.com/herbetyp/crud-product-api/models/product"
+	pModel "github.com/herbetyp/crud-product-api/models/product"
+	lModel "github.com/herbetyp/crud-product-api/models/login"
 	"gorm.io/gorm"
 )
 
 func AutoMigrations(db *gorm.DB) {
-	db.AutoMigrate(&model.Product{})
+	db.AutoMigrate(&pModel.Product{}, &lModel.Login{})
 }

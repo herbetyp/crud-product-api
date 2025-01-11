@@ -1,6 +1,6 @@
-package user
+package login
 
-type Login struct {
+type LoginDTO struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	GranType string `json:"grant_type"`

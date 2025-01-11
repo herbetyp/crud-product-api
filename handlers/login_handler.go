@@ -1,13 +1,17 @@
 package handlers
 
 import (
-	model "github.com/herbetyp/crud-product-api/models/user"
-	"github.com/herbetyp/crud-product-api/repositories"
+	"github.com/herbetyp/crud-product-api/interfaces"
+	model "github.com/herbetyp/crud-product-api/models/login"
 	"github.com/herbetyp/crud-product-api/services"
 )
 
-func LoginHandler(l *model.Login) (string, error) {
-	user, err := repositories.UsersLoginRepository(l)
+type LoginHandler struct {
+	repository interfaces.ILoginRepository
+}
+
+func (h *LoginHandler) NewLogin(l model.LoginDTO) (string, error) {
+	user, err := h.repository.GetLogin(l.Email)
 	if err != nil {
 		return "", err
 	}
@@ -22,4 +26,10 @@ func LoginHandler(l *model.Login) (string, error) {
 	}
 
 	return token, nil
+}
+
+func NewLoginHandler(r interfaces.ILoginRepository) *LoginHandler {
+	return &LoginHandler{
+		repository: r,
+	}
 }

@@ -1,27 +1,19 @@
 package repositories
 
 import (
-	"fmt"
-
 	"github.com/herbetyp/crud-product-api/database"
-	"github.com/herbetyp/crud-product-api/models"
+	model "github.com/herbetyp/crud-product-api/models/user"
 )
 
-func UsersLoginRepository(l *models.Login) (*models.UserModel, error) {
-	db := database.ConnectDB()
-	query, err := db.Prepare("SELECT * FROM users WHERE email = $1")
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
+type LoginRepository struct {
+}
 
-	var user models.UserModel
-	err = query.QueryRow(l.Email).Scan(&user.ID, &user.Username, &user.Email,
-		&user.Password, &user.CreatedAt, &user.UpdatedAt, &user.UId)
-	if err != nil {
-		return nil, err
-	}
+func (r *LoginRepository) GetLogin(email string) (model.User, error) {
+	db := database.GetDatabase()
 
-	query.Close()
-	return &user, nil
+	var u model.User
+
+	err := db.First(&u, email).Error
+
+	return u, err
 }

@@ -21,7 +21,7 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 		products.DELETE("/:product_id", controllers.Delete)
 
 		users.POST("", controllers.CreateUserContoller)
-		users.POST("/login", controllers.LoginController)
+		users.POST("/login", controllers.Login)
 		users.PATCH("/:user_id/reset-password", middlewares.AuthMiddlewareUser(), controllers.UpdateUserPassController)
 		users.DELETE("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.DeleteUserController)
 	}

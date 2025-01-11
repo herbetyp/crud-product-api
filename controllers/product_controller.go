@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +23,7 @@ func Create(c *gin.Context) {
 	handler := handlers.NewProductHandler(repo)
 
 	result, err := handler.CreateProduct(dto)
+
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": err.Error(),
@@ -38,7 +38,7 @@ func Create(c *gin.Context) {
 func Get(c *gin.Context) {
 	id := c.Param("product_id")
 	if id == "" {
-		c.JSON(400, "missing product id")
+		c.JSON(400, "Missing product id")
 		return
 	}
 
@@ -62,7 +62,7 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(200, result)
 }
 
 func GetAll(c *gin.Context) {
@@ -70,18 +70,19 @@ func GetAll(c *gin.Context) {
 	handler := handlers.NewProductHandler(repo)
 
 	result, err := handler.GetProducts()
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(200, result)
 }
 
 func Update(c *gin.Context) {
 	id := c.Param("product_id")
 	if id == "" {
-		c.JSON(400, "missing product id")
+		c.JSON(400, "Missing product id")
 		return
 	}
 
@@ -94,10 +95,10 @@ func Update(c *gin.Context) {
 	}
 
 	var dto model.ProductDTO
-	
+
 	err = c.BindJSON(&dto)
 	if err != nil {
-		c.JSON(400, "invalid request payload")
+		c.JSON(400, "Invalid request payload")
 		return
 	}
 
@@ -119,11 +120,12 @@ func Update(c *gin.Context) {
 func Delete(c *gin.Context) {
 	id := c.Param("product_id")
 	if id == "" {
-		c.JSON(400, "missing product id")
+		c.JSON(400, "Missing product id")
 		return
 	}
 
 	productID, err := strconv.Atoi(id)
+
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "ID has to be integer",

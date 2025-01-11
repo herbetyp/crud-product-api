@@ -2,12 +2,10 @@ package middlewares
 
 import (
 	"fmt"
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/herbetyp/crud-product-api/configs"
-	"github.com/herbetyp/crud-product-api/models"
 	"github.com/herbetyp/crud-product-api/repositories"
 	"github.com/herbetyp/crud-product-api/services"
 )
@@ -18,26 +16,26 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		authHeader := ctx.GetHeader("Authorization")
 		if authHeader == "" {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
+			ctx.AbortWithStatusJSON(401,
 				gin.H{"error": "Request does not contain an access token"})
 			return
 		}
 
 		if len(authHeader) <= len(BearerScheme) {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
+			ctx.AbortWithStatusJSON(401,
 				gin.H{"error": "Invalid authorization header format"})
 			return
 		}
 		userId := ctx.Param("user_id")
 
 		tokenString := authHeader[len(BearerScheme):]
-		isValidToken, subClaim := services.ValidateToken(tokenString, userId)
+		isValidToken, jwtSub := services.ValidateToken(tokenString, userId)
 		if !isValidToken {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			ctx.AbortWithStatusJSON(401, gin.H{"error": "Unauthorized"})
 			return
 		}
 
-		ctx.AddParam("sub", subClaim)
+		ctx.AddParam("jwt_sub", jwtSub)
 	}
 }
 
@@ -48,22 +46,21 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 
 		conf := configs.GetConfig()
 
-		userID, err := strconv.Atoi(ctx.Param("sub"))
+		userID, err := strconv.Atoi(ctx.Param("jwt_sub"))
 		if err != nil {
-			response := models.Response{Message: "Invalid user ID. Only integer are allowed"}
-			ctx.JSON(http.StatusBadRequest, response)
+			ctx.AbortWithStatusJSON(401, gin.H{"error": "ID has to be integer"})
 			return
 		}
 
 		user, _ := repositories.GetUserByIdRepository(userID)
 		if user.UId != conf.ADMIN.UId {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
+			ctx.AbortWithStatusJSON(401,
 				gin.H{"error": "Unauthorized"})
 			return
 		}
-		
-		if ctx.Param("user_id") == ctx.Param("sub") {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
+
+		if ctx.Param("user_id") == ctx.Param("jwt_sub") {
+			ctx.AbortWithStatusJSON(401,
 				gin.H{"error": "Unauthorized"})
 			return
 		}
@@ -74,12 +71,12 @@ func AuthMiddlewareUser() gin.HandlerFunc {
 		authMiddleware := AuthMiddleware()
 		authMiddleware(ctx)
 
-		subClaim, _ := strconv.Atoi(ctx.Param("sub"))
+		subClaim, _ := strconv.Atoi(ctx.Param("jwt_sub"))
 		userId, _ := strconv.Atoi(ctx.Param("user_id"))
 
 		if subClaim != userId {
 			fmt.Printf("invalid user: uid not match\n")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
+			ctx.AbortWithStatusJSON(401,
 				gin.H{"error": "Unauthorized"})
 			return
 		}

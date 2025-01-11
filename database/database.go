@@ -11,7 +11,6 @@ import (
 
 var db *gorm.DB
 
-
 func StartDatabase() {
 	dbConf := configs.GetConfig().DB
 
@@ -32,10 +31,9 @@ func StartDatabase() {
 	config.SetConnMaxLifetime(dbConf.SetConnMaxLifetime)
 
 	
-	fmt.Printf("Connected to database\n")
+	fmt.Printf("Connected to Postgres Database")
 	// migrations.AutoMigrations(db)
 }
-
 
 func GetDatabase() *gorm.DB {
 	return db

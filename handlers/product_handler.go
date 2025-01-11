@@ -3,8 +3,8 @@ package handlers
 import (
 	"fmt"
 
-	model "github.com/herbetyp/crud-product-api/models/product"
 	"github.com/herbetyp/crud-product-api/interfaces"
+	model "github.com/herbetyp/crud-product-api/models/product"
 )
 
 type ProductHandler struct {
@@ -13,7 +13,7 @@ type ProductHandler struct {
 
 func (h *ProductHandler) CreateProduct(data model.ProductDTO) (model.Product, error) {
 	prod := model.NewProduct(data.Name, data.Price, data.Code, data.Qtd, data.Unity)
-	
+
 	p, err := h.repository.Create(*prod)
 
 	if err != nil {
@@ -50,7 +50,7 @@ func (h *ProductHandler) UpdateProduct(data model.ProductDTO) error {
 
 	if err != nil {
 		return fmt.Errorf("cannot update product: %v", err)
-	}	
+	}
 
 	return nil
 }
