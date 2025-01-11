@@ -24,16 +24,16 @@
 - [x] OAuth Authentication Endpoint (*_grant_type=client_credentials_*)
 - [x] Authorization from **JWT Bearer Token**
 > Admin
-- [x] Create User Enpoint
-- [ ] Get User Enpoint
-- [ ] List Users Enpoint
-- [ ] Delete User Enpoint
-> User
-- [x] Reset Password Endpoint
+- [x] Create User
+- [ ] Get User
+- [ ] List Users
+- [ ] Delete User
+> User / Admin
+- [x] Reset Password
 > Products
 - [x] Create Product
-- [x] List One Product
-- [x] List All Products
+- [x] Get Product
+- [x] List Products
 - [x] Update Product
 - [x] Delete Product
 > Documentation
