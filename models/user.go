@@ -5,7 +5,7 @@ type UserModel struct {
 	Username  string `json:"username"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
-	UToken    string `json:"utoken"`
+	UId    string `json:"uid"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }

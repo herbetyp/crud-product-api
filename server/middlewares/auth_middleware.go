@@ -56,9 +56,13 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 		}
 
 		user, _ := repositories.GetUserByIdRepository(userID)
-		fmt.Println(user.UToken, conf.ADMIN.UToken)
-
-		if user.UToken != conf.ADMIN.UToken {
+		if user.UId != conf.ADMIN.UId {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
+				gin.H{"error": "Unauthorized"})
+			return
+		}
+		
+		if ctx.Param("user_id") == ctx.Param("sub") {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized,
 				gin.H{"error": "Unauthorized"})
 			return

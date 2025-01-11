@@ -34,7 +34,7 @@ type JWTConfig struct {
 }
 
 type AdminConfig struct {
-	UToken string
+	UId string
 }
 
 func GetConfig() *config {
@@ -69,7 +69,7 @@ func init() {
 			SecretKey: viper.GetString("jwt.secret_key"),
 		},
 		ADMIN: AdminConfig{
-			UToken: viper.GetString("admin.id"),
+			UId: viper.GetString("admin.uid"),
 		},
 	}
 	if os.Getenv("GINMODE") == "local" {
@@ -89,7 +89,7 @@ func init() {
 				SecretKey: viper.GetString("local_jwt.secret_key"),
 			},
 			ADMIN: AdminConfig{
-				UToken: viper.GetString("local_admin.id"),
+				UId: viper.GetString("local_admin.uid"),
 			},
 		}
 	}
