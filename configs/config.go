@@ -3,6 +3,7 @@ package configs
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -27,6 +28,10 @@ type DBConfig struct {
 	Password string
 	DBName   string
 	SSLmode  string
+	SetMaxIdleConns int
+	SetMaxOpenConns int
+	SetConnMaxLifetime time.Duration
+
 }
 
 type JWTConfig struct {
@@ -37,11 +42,7 @@ type AdminConfig struct {
 	UId string
 }
 
-func GetConfig() *config {
-	return cfg
-}
-
-func init() {
+func Init() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("toml")
@@ -64,6 +65,9 @@ func init() {
 			Password: viper.GetString("db.password"),
 			DBName:   viper.GetString("db.dbname"),
 			SSLmode:  viper.GetString("db.sslmode"),
+			SetMaxIdleConns: viper.GetInt("db.set_max_idle_conns"),
+			SetMaxOpenConns: viper.GetInt("db.set_max_open_conns"),
+			SetConnMaxLifetime: viper.GetDuration("db.set_conn_max_lifetime"),
 		},
 		JWT: JWTConfig{
 			SecretKey: viper.GetString("jwt.secret_key"),
@@ -84,6 +88,9 @@ func init() {
 				Password: viper.GetString("local_db.password"),
 				DBName:   viper.GetString("local_db.dbname"),
 				SSLmode:  viper.GetString("local_db.sslmode"),
+				SetMaxIdleConns: viper.GetInt("local_db.set_max_idle_conns"),
+				SetMaxOpenConns: viper.GetInt("local_db.set_max_open_conns"),
+				SetConnMaxLifetime: viper.GetDuration("local_db.set_conn_max_lifetime"),
 			},
 			JWT: JWTConfig{
 				SecretKey: viper.GetString("local_jwt.secret_key"),
@@ -93,4 +100,8 @@ func init() {
 			},
 		}
 	}
+}
+
+func GetConfig() *config {
+	return cfg
 }

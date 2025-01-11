@@ -2,132 +2,146 @@ package controllers
 
 import (
 	"net/http"
-
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/herbetyp/crud-product-api/handlers"
-	"github.com/herbetyp/crud-product-api/models"
-	"github.com/herbetyp/crud-product-api/repositories"
+	model "github.com/herbetyp/crud-product-api/models/product"
+	repository "github.com/herbetyp/crud-product-api/repositories"
 )
 
+func Create(c *gin.Context) {
+	var dto model.ProductDTO
 
-func CreateProductController(ctx *gin.Context) {
-	var product models.Product
-	err := ctx.BindJSON(&product)
+	err := c.BindJSON(&dto)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		c.JSON(400, gin.H{"error": "Invalid request payload"})
 		return
 	}
-	newProductId, err := handlers.CreateProductHandler(product)
+
+	repo := &repository.ProductRepository{}
+	handler := handlers.NewProductHandler(repo)
+
+	result, err := handler.CreateProduct(dto)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+
 		return
 	}
-	var newProduct *models.Product
-	newProduct, _ = repositories.GetProductByIdRepository(newProductId)
-	ctx.JSON(http.StatusCreated, newProduct)
+
+	c.JSON(200, result)
 }
 
-func GetProductsController(ctx *gin.Context) {
-	products, err := handlers.GetProductsHandler()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+func Get(c *gin.Context) {
+	id := c.Param("product_id")
+	if id == "" {
+		c.JSON(400, "missing product id")
 		return
 	}
-	ctx.JSON(http.StatusOK, products)
+
+	productId, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "ID has to be integer",
+		})
+		return
+	}
+
+	repo := &repository.ProductRepository{}
+	handler := handlers.NewProductHandler(repo)
+
+	result, err := handler.GetProductById(uint(productId))
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }
 
-func GetProductByIdController(ctx *gin.Context) {
-	id := ctx.Param("product_id")
-	if (id == "") {
-		response := models.Response{Message: "Missing product ID"}
-		ctx.JSON(http.StatusBadRequest, response)
+func GetAll(c *gin.Context) {
+	repo := &repository.ProductRepository{}
+	handler := handlers.NewProductHandler(repo)
+
+	result, err := handler.GetProducts()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func Update(c *gin.Context) {
+	id := c.Param("product_id")
+	if id == "" {
+		c.JSON(400, "missing product id")
+		return
+	}
+
+	_, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "ID has to be integer",
+		})
+		return
+	}
+
+	var dto model.ProductDTO
+	
+	err = c.BindJSON(&dto)
+	if err != nil {
+		c.JSON(400, "invalid request payload")
+		return
+	}
+
+	repo := &repository.ProductRepository{}
+	handler := handlers.NewProductHandler(repo)
+
+	err = handler.UpdateProduct(dto)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.Status(200)
+}
+
+func Delete(c *gin.Context) {
+	id := c.Param("product_id")
+	if id == "" {
+		c.JSON(400, "missing product id")
 		return
 	}
 
 	productID, err := strconv.Atoi(id)
 	if err != nil {
-		response := models.Response{Message: "Invalid product ID. Only integer are allowed"}
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-	product, err := handlers.GetProductByIdHandler(productID)
-	if (product.ID != 0 && err != nil) {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if (product.ID == 0) {
-		response := models.Response{Message: "Product not found"}
-		ctx.JSON(http.StatusNotFound, response)
-		return
-	}
-	ctx.JSON(http.StatusOK, product)
-}
-
-func UpdateProductController(ctx *gin.Context) {
-	id := ctx.Param("product_id")
-	if (id == "") {
-		response := models.Response{Message: "Missing product ID"}
-		ctx.JSON(http.StatusBadRequest, response)
+		c.JSON(400, gin.H{
+			"error": "ID has to be integer",
+		})
 		return
 	}
 
-	productID, err := strconv.Atoi(id)
+	repo := &repository.ProductRepository{}
+	handler := handlers.NewProductHandler(repo)
+
+	result, err := handler.DeleteProduct(uint(productID))
 	if err != nil {
-		response := models.Response{Message: "Invalid product ID. Only integer are allowed"}
-		ctx.JSON(http.StatusBadRequest, response)
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+
 		return
 	}
 
-	var product models.Product
-	err = ctx.BindJSON(&product)
-	if err != nil {
-		response := models.Response{Message: "Invalid request payload"}
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	updatedProductId, err := handlers.UpdateProductHandler(productID, product)
-	if (updatedProductId != 0 && err != nil) {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if (updatedProductId == 0) {
-		response := models.Response{Message: "Product not found"}
-		ctx.JSON(http.StatusNotFound, response)
-		return
-	}
-	var updatedProduct *models.Product
-	updatedProduct, _ = repositories.GetProductByIdRepository(updatedProductId)
-	ctx.JSON(http.StatusOK, updatedProduct)
-}
-
-func DeleteProductController(ctx *gin.Context) {
-	id := ctx.Param("product_id")
-	if (id == "") {
-		response := models.Response{Message: "Missing product ID"}
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	productID, err := strconv.Atoi(id)
-	if err != nil {
-		response := models.Response{Message: "Invalid product ID. Only integer are allowed"}
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	deletedProductId, err := handlers.DeleteProductHandler(productID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if (deletedProductId == 0) {
-		response := models.Response{Message: "Product not found"}
-		ctx.JSON(http.StatusNotFound, response)
-		return
-	}
-	response := models.Response{Message: "Product deleted successfully"}
-	ctx.JSON(http.StatusOK, response)
+	c.JSON(200, result)
 }

@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"github.com/herbetyp/crud-product-api/models"
+	model "github.com/herbetyp/crud-product-api/models/user"
 	"github.com/herbetyp/crud-product-api/repositories"
 )
 
-func CreateUserHandler(u models.UserModel) (string, error) {
+func CreateUserHandler(u model.UserModel) (string, error) {
 	username, err := repositories.CreateUserRepository(u)
 	if err != nil {
 		return username, err

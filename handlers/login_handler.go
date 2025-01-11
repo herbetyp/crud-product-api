@@ -1,12 +1,12 @@
 package handlers
 
 import (
-	"github.com/herbetyp/crud-product-api/models"
+	model "github.com/herbetyp/crud-product-api/models/user"
 	"github.com/herbetyp/crud-product-api/repositories"
 	"github.com/herbetyp/crud-product-api/services"
 )
 
-func LoginHandler(l *models.Login) (string, error) {
+func LoginHandler(l *model.Login) (string, error) {
 	user, err := repositories.UsersLoginRepository(l)
 	if err != nil {
 		return "", err

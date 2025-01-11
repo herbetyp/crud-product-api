@@ -14,11 +14,11 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 	{
 		base_url.GET("/ping", func(ctx *gin.Context) { ctx.JSON(200, gin.H{"message": "pong"}) })
 
-		products.GET("", controllers.GetProductsController)
-		products.GET("/:product_id", controllers.GetProductByIdController)
-		products.POST("", controllers.CreateProductController)
-		products.PUT("/:product_id", controllers.UpdateProductController)
-		products.DELETE("/:product_id", controllers.DeleteProductController)
+		products.GET("", controllers.GetAll)
+		products.GET("/:product_id", controllers.Get)
+		products.POST("", controllers.Create)
+		products.PUT("/:product_id", controllers.Update)
+		products.DELETE("/:product_id", controllers.Delete)
 
 		users.POST("", controllers.CreateUserContoller)
 		users.POST("/login", controllers.LoginController)

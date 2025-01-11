@@ -1,47 +1,72 @@
 package handlers
 
 import (
-	"github.com/herbetyp/crud-product-api/models"
-	"github.com/herbetyp/crud-product-api/repositories"
+	"fmt"
+
+	model "github.com/herbetyp/crud-product-api/models/product"
+	"github.com/herbetyp/crud-product-api/interfaces"
 )
 
-
-func GetProductsHandler() ([]models.Product, error) {
-	return repositories.GetProductsRepository()
+type ProductHandler struct {
+	repository interfaces.IProductRepository
 }
 
-func CreateProductHandler(p models.Product) (int, error) {
-	newProductId, err := repositories.CreateProductRepository(p)
+func (h *ProductHandler) CreateProduct(data model.ProductDTO) (model.Product, error) {
+	prod := model.NewProduct(data.Name, data.Price, data.Code, data.Qtd, data.Unity)
+	
+	p, err := h.repository.Create(*prod)
+
 	if err != nil {
-		return 0, err
+		return model.Product{}, fmt.Errorf("cannot create product: %v", err)
 	}
 
-	return newProductId, nil
+	return p, nil
 }
 
-func GetProductByIdHandler(id int) (*models.Product, error) {
-	getProduct, err := repositories.GetProductByIdRepository(id)
+func (h *ProductHandler) GetProductById(id uint) (model.Product, error) {
+	p, err := h.repository.Get(id)
+
 	if err != nil {
-		return &models.Product{}, err
+		return model.Product{}, fmt.Errorf("cannot find product: %v", err)
 	}
 
-	return getProduct, nil
+	return p, nil
 }
 
-func UpdateProductHandler(id int, p models.Product) (int, error) {
-	updatedProductId, err := repositories.UpdateProductRepository(id, p)
+func (h *ProductHandler) GetProducts() ([]model.Product, error) {
+	p, err := h.repository.GetAll()
+
 	if err != nil {
-		return 0, err
+		return nil, fmt.Errorf("cannot find products: %v", err)
 	}
 
-	return updatedProductId, nil
+	return p, nil
 }
 
-func DeleteProductHandler(id int) (int, error) {
-	deletedProductId, err := repositories.DeleteProductRepository(id)
+func (h *ProductHandler) UpdateProduct(data model.ProductDTO) error {
+	prod := model.NewProductWithID(data.Id, data.Name, data.Price, data.Code, data.Qtd, data.Unity)
+
+	err := h.repository.Update(*prod)
+
 	if err != nil {
-		return 0, err
+		return fmt.Errorf("cannot update product: %v", err)
+	}	
+
+	return nil
+}
+
+func (h *ProductHandler) DeleteProduct(id uint) (model.Product, error) {
+	p, err := h.repository.Delete(id)
+
+	if err != nil {
+		return model.Product{}, fmt.Errorf("cannot delete product: %v", err)
 	}
 
-	return deletedProductId, nil
+	return p, nil
+}
+
+func NewProductHandler(r interfaces.IProductRepository) *ProductHandler {
+	return &ProductHandler{
+		repository: r,
+	}
 }

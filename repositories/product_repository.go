@@ -1,122 +1,62 @@
 package repositories
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/herbetyp/crud-product-api/database"
-	"github.com/herbetyp/crud-product-api/models"
+	model "github.com/herbetyp/crud-product-api/models/product"
 )
 
-func GetProductsRepository() ([]models.Product, error) {
-	db := database.ConnectDB()
-	query := "SELECT * FROM products"
-	rows, err := db.Query(query)
-	if err != nil {
-		fmt.Println(err)
-		return []models.Product{}, err
-	}
-
-	var productList []models.Product
-	var productObj models.Product
-
-	for rows.Next() {
-		err := rows.Scan(&productObj.ID, &productObj.Name, &productObj.Price, &productObj.Code, 
-			&productObj.Qtd, &productObj.Unity, &productObj.CreatedAt, &productObj.UpdatedAt)
-		if err != nil {
-			fmt.Println(err)
-			return []models.Product{}, err
-		}
-		productList = append(productList, productObj)
-	}
-
-	defer rows.Close()
-	return productList, nil
+type ProductRepository struct {
 }
 
-func CreateProductRepository(product models.Product) (int, error) {
-	var id int
-	db := database.ConnectDB()
-	query, err := db.Prepare("INSERT INTO products (name, price, code, qtd, unity)" + 
-					"VALUES ($1, $2, $3, $4, $5) RETURNING id")
-	if err != nil {
-		fmt.Println(err)
-		return 0, err
-	}
+func (r *ProductRepository) Create(p model.Product) (model.Product, error) {
+	db := database.GetDatabase()
+	
+	err := db.Create(&p).Error
 
-	err = query.QueryRow(product.Name, product.Price, product.Code, 
-		product.Qtd, product.Unity).Scan(&id)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return 0, err
-		}
-		fmt.Println(err)
-		return 0, err
-	}
-	query.Close()
-	return id, nil
+	return p, err
 }
 
-func GetProductByIdRepository(id int) (*models.Product, error) {
-	db := database.ConnectDB()
-	query, err := db.Prepare("SELECT * FROM products WHERE id = $1")
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
+func (r *ProductRepository) GetAll() ([]model.Product, error) {
+	db := database.GetDatabase()
 
-	var product models.Product
-	err = query.QueryRow(id).Scan(&product.ID, &product.Name, &product.Price, &product.Code,
-		&product.Qtd, &product.Unity, &product.CreatedAt, &product.UpdatedAt)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return &models.Product{}, err
-		}
-		fmt.Println(err)
-		return &models.Product{}, err
-	}
-	query.Close()
-	return &product, nil
+	var p []model.Product
+
+	err := db.Find(&p).Error
+
+	return p, err
 }
 
-func UpdateProductRepository(id int, product models.Product) (int, error) {
-	db := database.ConnectDB()
-	query, err := db.Prepare("UPDATE products SET name = $1, price = $2, code = $3," +
-		 "qtd = $4, unity = $5 WHERE id = $6 RETURNING id")
-	if err != nil {
-		fmt.Println(err)
-		return 0, err
-	}
+func (r *ProductRepository) Get(id uint) (model.Product, error) {
+	db := database.GetDatabase()
 
-	err = query.QueryRow(product.Name, product.Price, product.Code, 
-		product.Qtd, product.Unity, id).Scan(&id)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return 0, err
-		}
-		fmt.Println(err)
-		return 0, err
-	}
-	query.Close()
-	return id, nil
+	var p model.Product
+
+	err := db.First(&p, id).Error
+
+	return p, err
 }
 
-func DeleteProductRepository(id int) (int, error) {
-	db := database.ConnectDB()
-	query, err := db.Prepare("DELETE FROM products WHERE id = $1 RETURNING id")
+func (r *ProductRepository) Update(p model.Product) error {
+	db := database.GetDatabase()
+
+	err := db.Save(&p).Error
+
+	return err
+}
+
+func (r *ProductRepository) Delete(id uint) (model.Product, error) {
+	db := database.GetDatabase()
+	n, err := r.Get(id)
 	if err != nil {
-		fmt.Println(err)
-		return 0, err
+		return model.Product{}, err
 	}
 
-	err = query.QueryRow(id).Scan(&id)
+	err = db.Delete(&n).Error
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return 0, nil
-		}
-		fmt.Println(err)
-		return 0, err
+		return model.Product{}, fmt.Errorf("cannot delete file: %v", err)
 	}
-	query.Close()
-	return id, nil
+
+	return n, nil
 }
