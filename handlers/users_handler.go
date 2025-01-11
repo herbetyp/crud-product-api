@@ -1,33 +1,77 @@
 package handlers
 
 import (
+	"fmt"
+
+	"github.com/herbetyp/crud-product-api/interfaces"
 	model "github.com/herbetyp/crud-product-api/models/user"
-	"github.com/herbetyp/crud-product-api/repositories"
+	"github.com/herbetyp/crud-product-api/services"
 )
 
-func CreateUserHandler(u model.User) (string, error) {
-	username, err := repositories.CreateUserRepository(u)
-	if err != nil {
-		return username, err
-	}
-
-	return username, nil
+type UserHandler struct {
+	repository interfaces.IUserRepository
 }
 
-func UpdateUserPassHandler(id int, p string) (int, error) {
-	userId, err := repositories.UpdateUserPassRepository(id, p)
+func (h *UserHandler) CreateUser(data model.UserDTO) (model.User, error) {
+	user := model.NewUser(data.Username, data.Email, data.Password)
+
+	user.Password = services.SHA512Encoder(user.Password)
+
+	u, err := h.repository.Create(*user)
+
 	if err != nil {
-		return 0, err
+		return model.User{}, fmt.Errorf("cannot create user: %v", err)
 	}
 
-	return userId, nil
+	return u, nil
 }
 
-func DeleteUserHandler(id int) (int, error) {
-	userId, err := repositories.DeleteUserRepository(id)
+func (h *UserHandler) GetUser(id uint) (model.User, error) {
+	u, err := h.repository.Get(id)
+
 	if err != nil {
-		return 0, err
+		return model.User{}, fmt.Errorf("cannot find user: %v", err)
 	}
 
-	return userId, nil
+	return u, nil
+}
+
+func (h *UserHandler) GetUsers() ([]model.User, error) {
+	us, err := h.repository.GetAll()
+
+	if err != nil {
+		return nil, fmt.Errorf("cannot find users: %v", err)
+	}
+
+	return us, nil
+}
+
+func (h *UserHandler) UpdateUser(data model.UserDTO) (model.User, error) {
+	user := model.NewUserWithID(data.ID, data.Username, data.Email, data.Password)
+
+	u, err := h.repository.Update(user.ID)
+
+	if err != nil {
+		return model.User{}, fmt.Errorf("cannot update product: %v", err)
+	}
+
+	return u, nil
+}
+
+func (h *UserHandler) DeleteUser(data model.UserDTO) (model.User, error) {
+	user := model.NewUserWithID(data.ID, data.Username, data.Email, data.Password)
+
+	u, err := h.repository.Delete(user.ID)
+
+	if err != nil {
+		return model.User{}, fmt.Errorf("cannot delete user: %v", err)
+	}
+
+	return u, nil
+}
+
+func NewUserHandler(r interfaces.IUserRepository) *UserHandler {
+	return &UserHandler{
+		repository: r,
+	}
 }

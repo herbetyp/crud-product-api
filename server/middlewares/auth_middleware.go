@@ -45,14 +45,21 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 		authMiddleware(ctx)
 
 		conf := configs.GetConfig()
-
+		
 		userID, err := strconv.Atoi(ctx.Param("jwt_sub"))
 		if err != nil {
 			ctx.AbortWithStatusJSON(401, gin.H{"error": "ID has to be integer"})
 			return
 		}
+		
+		repo := &repositories.UserRepository{}	
+		user, err := repo.Get(uint(userID))
 
-		user, _ := repositories.GetUserByIdRepository(userID)
+		if err != nil {
+			ctx.AbortWithStatusJSON(500, gin.H{"error": "Failed to get user"})
+			return
+		}
+		
 		if user.UId != conf.ADMIN.UId {
 			ctx.AbortWithStatusJSON(401,
 				gin.H{"error": "Unauthorized"})
@@ -64,8 +71,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 				gin.H{"error": "Unauthorized"})
 			return
 		}
-	}
-}
+	}}
 func AuthMiddlewareUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authMiddleware := AuthMiddleware()

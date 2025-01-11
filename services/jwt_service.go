@@ -9,7 +9,7 @@ import (
 	"github.com/herbetyp/crud-product-api/configs"
 )
 
-func GenerateToken(id int) (string, error) {
+func GenerateToken(id uint) (string, error) {
 	conf := configs.GetConfig()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
@@ -22,6 +22,7 @@ func GenerateToken(id int) (string, error) {
 	})
 
 	t, err := token.SignedString([]byte(conf.JWT.SecretKey))
+
 	if err != nil {
 		return "", err
 	}
@@ -46,8 +47,9 @@ func ValidateToken(token string, uid string) (bool, string) {
 		return false, ""
 	}
 
-	// Validate token claims
+	// Validate claims
 	claims, _ := tokenDecoded.Claims.(jwt.MapClaims)
+	
 	if claims["iss"] != "auth-product-api" || claims["aud"] != "api://product-api" {
 		fmt.Printf("invalid claims\n")
 		return false, ""

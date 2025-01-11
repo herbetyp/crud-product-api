@@ -20,14 +20,13 @@ func (h *LoginHandler) NewLogin(l model.LoginDTO) (string, error) {
 		return "", err
 	}
 
-	token, err := services.GenerateToken(user.ID)
+	token, err := services.GenerateToken(uint(user.ID))
 	if err != nil {
 		return "", err
 	}
 
 	return token, nil
 }
-
 func NewLoginHandler(r interfaces.ILoginRepository) *LoginHandler {
 	return &LoginHandler{
 		repository: r,

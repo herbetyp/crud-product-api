@@ -10,7 +10,7 @@ import (
 	repository "github.com/herbetyp/crud-product-api/repositories"
 )
 
-func Create(c *gin.Context) {
+func CreateProduct(c *gin.Context) {
 	var dto model.ProductDTO
 
 	err := c.BindJSON(&dto)
@@ -35,7 +35,7 @@ func Create(c *gin.Context) {
 	c.JSON(200, result)
 }
 
-func Get(c *gin.Context) {
+func GetProduct(c *gin.Context) {
 	id := c.Param("product_id")
 	if id == "" {
 		c.JSON(400, "Missing product id")
@@ -53,7 +53,7 @@ func Get(c *gin.Context) {
 	repo := &repository.ProductRepository{}
 	handler := handlers.NewProductHandler(repo)
 
-	result, err := handler.GetProductById(uint(productId))
+	result, err := handler.GetProduct(uint(productId))
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -65,7 +65,7 @@ func Get(c *gin.Context) {
 	c.JSON(200, result)
 }
 
-func GetAll(c *gin.Context) {
+func GetProducts(c *gin.Context) {
 	repo := &repository.ProductRepository{}
 	handler := handlers.NewProductHandler(repo)
 
@@ -79,14 +79,16 @@ func GetAll(c *gin.Context) {
 	c.JSON(200, result)
 }
 
-func Update(c *gin.Context) {
+func UpdateProduct(c *gin.Context) {
 	id := c.Param("product_id")
+
 	if id == "" {
 		c.JSON(400, "Missing product id")
 		return
 	}
 
 	_, err := strconv.Atoi(id)
+
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "ID has to be integer",
@@ -97,6 +99,7 @@ func Update(c *gin.Context) {
 	var dto model.ProductDTO
 
 	err = c.BindJSON(&dto)
+
 	if err != nil {
 		c.JSON(400, "Invalid request payload")
 		return
@@ -105,7 +108,7 @@ func Update(c *gin.Context) {
 	repo := &repository.ProductRepository{}
 	handler := handlers.NewProductHandler(repo)
 
-	err = handler.UpdateProduct(dto)
+	result, err := handler.UpdateProduct(dto)
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -114,17 +117,17 @@ func Update(c *gin.Context) {
 		return
 	}
 
-	c.Status(200)
+	c.JSON(200, result)
 }
 
-func Delete(c *gin.Context) {
+func DeleteProduct(c *gin.Context) {
 	id := c.Param("product_id")
 	if id == "" {
 		c.JSON(400, "Missing product id")
 		return
 	}
 
-	productID, err := strconv.Atoi(id)
+	_, err := strconv.Atoi(id)
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -133,10 +136,13 @@ func Delete(c *gin.Context) {
 		return
 	}
 
+	var dto model.ProductDTO
+
 	repo := &repository.ProductRepository{}
 	handler := handlers.NewProductHandler(repo)
 
-	result, err := handler.DeleteProduct(uint(productID))
+	result, err := handler.DeleteProduct(dto)
+
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": err.Error(),

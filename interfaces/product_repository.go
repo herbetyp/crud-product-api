@@ -7,7 +7,7 @@ import (
 type IProductRepository interface {
 	Create(p model.Product) (model.Product, error)
 	Delete(id uint) (model.Product, error)
-	Update(p model.Product) error
+	Update(id uint) (model.Product, error)
 	Get(id uint) (model.Product, error)
 	GetAll() ([]model.Product, error)
 }

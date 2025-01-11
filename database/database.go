@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/herbetyp/crud-product-api/configs"
-	// "github.com/herbetyp/crud-product-api/database/migrations"
+	"github.com/herbetyp/crud-product-api/database/migrations"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -32,7 +32,7 @@ func StartDatabase() {
 
 	
 	fmt.Printf("Connected to Postgres Database")
-	// migrations.AutoMigrations(db)
+	migrations.AutoMigrations(db)
 }
 
 func GetDatabase() *gorm.DB {

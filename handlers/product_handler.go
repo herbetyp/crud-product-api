@@ -23,7 +23,7 @@ func (h *ProductHandler) CreateProduct(data model.ProductDTO) (model.Product, er
 	return p, nil
 }
 
-func (h *ProductHandler) GetProductById(id uint) (model.Product, error) {
+func (h *ProductHandler) GetProduct(id uint) (model.Product, error) {
 	p, err := h.repository.Get(id)
 
 	if err != nil {
@@ -34,29 +34,31 @@ func (h *ProductHandler) GetProductById(id uint) (model.Product, error) {
 }
 
 func (h *ProductHandler) GetProducts() ([]model.Product, error) {
-	p, err := h.repository.GetAll()
+	ps, err := h.repository.GetAll()
 
 	if err != nil {
 		return nil, fmt.Errorf("cannot find products: %v", err)
 	}
 
+	return ps, nil
+}
+
+func (h *ProductHandler) UpdateProduct(data model.ProductDTO) (model.Product, error) {
+	prod := model.NewProductWithID(data.ID, data.Name, data.Price, data.Code, data.Qtd, data.Unity)
+
+	p, err := h.repository.Update(prod.ID)
+
+	if err != nil {
+		return model.Product{}, fmt.Errorf("cannot update product: %v", err)
+	}
+
 	return p, nil
 }
 
-func (h *ProductHandler) UpdateProduct(data model.ProductDTO) error {
-	prod := model.NewProductWithID(data.Id, data.Name, data.Price, data.Code, data.Qtd, data.Unity)
+func (h *ProductHandler) DeleteProduct(data model.ProductDTO) (model.Product, error) {
+	prod := model.NewProductWithID(data.ID, data.Name, data.Price, data.Code, data.Qtd, data.Unity)
 
-	err := h.repository.Update(*prod)
-
-	if err != nil {
-		return fmt.Errorf("cannot update product: %v", err)
-	}
-
-	return nil
-}
-
-func (h *ProductHandler) DeleteProduct(id uint) (model.Product, error) {
-	p, err := h.repository.Delete(id)
+	p, err := h.repository.Delete(prod.ID)
 
 	if err != nil {
 		return model.Product{}, fmt.Errorf("cannot delete product: %v", err)

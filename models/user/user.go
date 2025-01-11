@@ -18,3 +18,20 @@ type User struct {
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 	LastLogin time.Time      `json:"last_login"`
 }
+
+func NewUser(username string, email string, passw string) *User {
+	return &User{
+		Username: username,
+		Email:    email,
+		Password: passw,
+	}
+}
+
+func NewUserWithID(id uint, username string, email string, passw string) *User {
+	return &User{
+		ID:       id,
+		Username: username,
+		Email:    email,
+		Password: passw,
+	}
+}

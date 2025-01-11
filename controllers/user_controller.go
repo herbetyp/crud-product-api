@@ -1,106 +1,152 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	
 	"github.com/herbetyp/crud-product-api/handlers"
-	"github.com/herbetyp/crud-product-api/models"
-	"github.com/herbetyp/crud-product-api/services"
+	model "github.com/herbetyp/crud-product-api/models/user"
+	repository "github.com/herbetyp/crud-product-api/repositories"
 )
 
-func CreateUserContoller(ctx *gin.Context) {
-	var user models.UserModel
+func CreateUser(c *gin.Context) {
+	var dto model.UserDTO
 
-	err := ctx.ShouldBindJSON(&user)
+	err := c.BindJSON(&dto)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "cannot bind JSON: " + err.Error(),
+		c.JSON(400, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	repo := &repository.UserRepository{}
+	handler := handlers.NewUserHandler(repo)
+
+	result, err := handler.CreateUser(dto)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(201, result)
+}
+
+func GetUser(c *gin.Context) {
+	id := c.Param("user_id")
+	if id == "" {
+		c.JSON(400, "Missing user id")
+		return
+	}
+
+	userId, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "ID has to be integer",
 		})
 		return
 	}
 
-	user.Password = services.SHA512Encoder(user.Password)
+	repo := &repository.UserRepository{}
+	handler := handlers.NewUserHandler(repo)
 
-	_, err = handlers.CreateUserHandler(user)
+	result, err := handler.GetUser(uint(userId))
+
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "cannot create user: " + err.Error(),
+		c.JSON(400, gin.H{
+			"error": err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": fmt.Sprintf("User %s created", user.Username)})
+	c.JSON(200, result)
 }
 
-func UpdateUserPassController(ctx *gin.Context) {
-	id := ctx.Param("user_id")
-	if id == "" {
-		response := models.Response{Message: "Missing user ID"}
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
+func GetUsers(c *gin.Context) {
+	repo := &repository.UserRepository{}
+	handler := handlers.NewUserHandler(repo)
 
-	userID, err := strconv.Atoi(id)
+	result, err := handler.GetUsers()
+
 	if err != nil {
-		response := models.Response{Message: "Invalid user ID. Only integer are allowed"}
-		ctx.JSON(http.StatusBadRequest, response)
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	var user models.UserModel
-	err = ctx.BindJSON(&user)
-	if err != nil {
-		response := models.Response{Message: "Invalid request payload"}
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	user.Password = services.SHA512Encoder(user.Password)
-
-	updatedUserId, err := handlers.UpdateUserPassHandler(userID, user.Password)
-	if updatedUserId != 0 && err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	if updatedUserId == 0 {
-		response := models.Response{Message: "User not found"}
-		ctx.JSON(http.StatusNotFound, response)
-		return
-	}
-
-	ctx.AbortWithStatus(http.StatusOK)
+	c.JSON(200, result)
 }
 
+func UpdateUser(c *gin.Context) {
+	id := c.Param("user_id")
 
-func DeleteUserController(ctx *gin.Context) {
-	id := ctx.Param("user_id")
 	if id == "" {
-		response := models.Response{Message: "Missing user ID"}
-		ctx.JSON(http.StatusBadRequest, response)
+		c.JSON(400, "Missing user ID")
+		return
 	}
 
-	userID, err := strconv.Atoi(id)
+	_, err := strconv.Atoi(id)
+
 	if err != nil {
-		response := models.Response{Message: "Invalid user ID. Only integer are allowed"}
-		ctx.JSON(http.StatusBadRequest, response)
+		c.JSON(400, gin.H{
+			"error": "ID has to be integer",
+		})
 		return
 	}
 
-	deletedUserId, err := handlers.DeleteUserHandler(userID)
-	if deletedUserId != 0 && err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	var dto model.UserDTO
+
+	err = c.BindJSON(&dto)
+	if err != nil {
+		c.JSON(400, "Invalid request payload")
 		return
 	}
 
-	if deletedUserId == 0 {
-		response := models.Response{Message: "User not found"}
-		ctx.JSON(http.StatusNotFound, response)
+	repo := &repository.UserRepository{}
+	handler := handlers.NewUserHandler(repo)
+
+	result, err := handler.UpdateUser(dto)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
-	ctx.AbortWithStatus(http.StatusOK)
+	c.JSON(200, result)
+}
+func DeleteUser(c *gin.Context) {
+	id := c.Param("product_id")
+	if id == "" {
+		c.JSON(400, "Missing user ID")
+		return
+	}
+
+	_, err := strconv.Atoi(id)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "ID has to be integer",
+		})
+		return
+	}
+
+	var dto model.UserDTO
+
+	repo := &repository.UserRepository{}
+	handler := handlers.NewUserHandler(repo)
+
+	result, err := handler.DeleteUser(dto)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, result)
 }
