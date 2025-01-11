@@ -4,9 +4,9 @@
 <!-- ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white) -->
 
 
-# Crud Product API - Golang
+# Crud Products API
 
->API for product inventory management.
+> API for product inventory management.
 
 ### Developed with:
 - [Golang](https://go.dev/)
@@ -19,28 +19,38 @@
 
 
 ### API Features:
-- [x] Create User Enpoint
-- [x] Reset Password Endpoint
+
+> Auth
 - [x] OAuth Authentication Endpoint (*_grant_type=client_credentials_*)
 - [x] Authorization from **JWT Bearer Token**
+> Admin
+- [x] Create User Enpoint
+- [ ] Get User Enpoint
+- [ ] List Users Enpoint
+- [ ] Delete User Enpoint
+> User
+- [x] Reset Password Endpoint
+> Products
 - [x] Create Product
-- [x] List All Products
 - [x] List One Product
+- [x] List All Products
 - [x] Update Product
 - [x] Delete Product
-- [ ] Publish API in **Heroku** Platform
+> Documentation
 - [ ] Documentation with **Swagger/OpenAPI**
+> Application systems
 - [ ] Log System
 - [ ] Cache System
 - [ ] Auto Migrations System
+---
 
 ### Run localy application:
-[Docker](https://www.docker.com/) **with docker compose module**
+Docker *__with docker compose module__*
 
 ```bash
 docker compose up -d # exposed in port 3000
 ```
-OR from Local Server (Gin)
+Runner Local Server *__Gin__*
 ```bash
 export GINMODE="local"
 docker compose up -d api_db
