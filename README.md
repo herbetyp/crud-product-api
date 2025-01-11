@@ -28,12 +28,10 @@
 - [x] List One Product
 - [x] Update Product
 - [x] Delete Product
-- [x] Use **Viper** library for app config and ***.env** file for docker-compose
-- [ ] Use **GORM** library for manager Database (*__discovery__*) 
 - [ ] Publish API in **Heroku** Platform
-- [ ] Documentation with **Swagger**
+- [ ] Documentation with **Swagger/OpenAPI**
 - [ ] Log System
-- [ ] Cache system 
+- [ ] Cache System
 - [ ] Auto Migrations System
 
 ### Run localy application:
