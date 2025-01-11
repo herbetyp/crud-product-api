@@ -12,9 +12,9 @@
 - [Golang](https://go.dev/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Docker](https://www.docker.com/)
-- [Gin Web Framwork](https://github.com/gin-gonic/gin)
-<!-- - [GORM](https://gorm.io/index.html)
-- [Swagger](https://swagger.io/) (documentation)
+- [Gin Web Framwork](https://gin-gonic.com/)
+- [GORM](https://gorm.io/index.html)
+<!-- - [Swagger](https://swagger.io/) (documentation)
 - [Heroku](https://www.heroku.com/) (cloud platform) -->
 
 
