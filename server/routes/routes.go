@@ -10,7 +10,11 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 	base_url := router.Group("/v1")
 
 	products := base_url.Group("/products", middlewares.AuthMiddleware())
+	
 	users := base_url.Group("/users")
+
+	base_url.POST("/oauth2/token", controllers.Login)
+	
 	{
 		base_url.GET("/ping", func(ctx *gin.Context) { ctx.JSON(200, gin.H{"message": "pong"}) })
 
@@ -23,7 +27,6 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 		users.GET("", middlewares.AuthMiddlewareAdmin(), controllers.GetUsers)
 		users.GET("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.GetUser)
 		users.POST("", controllers.CreateUser)
-		users.POST("/login", controllers.Login)
 		users.PATCH("/:user_id/update-passw", middlewares.AuthMiddlewareAdmin(), controllers.UpdateUser)
 		users.DELETE("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.DeleteUser)
 	}
