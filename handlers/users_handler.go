@@ -49,7 +49,9 @@ func (h *UserHandler) GetUsers() ([]model.User, error) {
 func (h *UserHandler) UpdateUser(data model.UserDTO) (model.User, error) {
 	user := model.NewUserWithID(data.ID, data.Username, data.Email, data.Password)
 
-	u, err := h.repository.Update(user.ID)
+	user.Password = services.SHA512Encoder(user.Password)
+
+	u, err := h.repository.UpdatePassw(*user)
 
 	if err != nil {
 		return model.User{}, fmt.Errorf("cannot update user: %v", err)
@@ -61,7 +63,7 @@ func (h *UserHandler) UpdateUser(data model.UserDTO) (model.User, error) {
 func (h *UserHandler) DeleteUser(data model.UserDTO) (model.User, error) {
 	user := model.NewUserWithID(data.ID, data.Username, data.Email, data.Password)
 
-	u, err := h.repository.Delete(user.ID)
+	u, err := h.repository.Delete(*user)
 
 	if err != nil {
 		return model.User{}, fmt.Errorf("cannot delete user: %v", err)

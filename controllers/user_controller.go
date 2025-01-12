@@ -87,7 +87,7 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	_, err := strconv.Atoi(id)
+	userID, err := strconv.Atoi(id)
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -107,6 +107,7 @@ func UpdateUser(c *gin.Context) {
 	repo := &repository.UserRepository{}
 	handler := handlers.NewUserHandler(repo)
 
+	dto.ID = uint(userID)
 	result, err := handler.UpdateUser(dto)
 
 	if err != nil {
@@ -119,13 +120,13 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(200, result)
 }
 func DeleteUser(c *gin.Context) {
-	id := c.Param("product_id")
+	id := c.Param("user_id")
 	if id == "" {
 		c.JSON(400, "Missing user ID")
 		return
 	}
 
-	_, err := strconv.Atoi(id)
+	userID, err := strconv.Atoi(id)
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -139,6 +140,7 @@ func DeleteUser(c *gin.Context) {
 	repo := &repository.UserRepository{}
 	handler := handlers.NewUserHandler(repo)
 
+	dto.ID = uint(userID)
 	result, err := handler.DeleteUser(dto)
 
 	if err != nil {

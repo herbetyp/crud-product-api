@@ -46,7 +46,7 @@ func (h *ProductHandler) GetProducts() ([]model.Product, error) {
 func (h *ProductHandler) UpdateProduct(data model.ProductDTO) (model.Product, error) {
 	prod := model.NewProductWithID(data.ID, data.Name, data.Price, data.Code, data.Qtd, data.Unity)
 
-	p, err := h.repository.Update(prod.ID)
+	p, err := h.repository.Update(*prod)
 
 	if err != nil {
 		return model.Product{}, fmt.Errorf("cannot update product: %v", err)
@@ -55,10 +55,10 @@ func (h *ProductHandler) UpdateProduct(data model.ProductDTO) (model.Product, er
 	return p, nil
 }
 
-func (h *ProductHandler) DeleteProduct(data model.ProductDTO) (model.Product, error) {
+func (h *ProductHandler) DeleteProduct(data model.ProductDTO, id uint) (model.Product, error) {
 	prod := model.NewProductWithID(data.ID, data.Name, data.Price, data.Code, data.Qtd, data.Unity)
 
-	p, err := h.repository.Delete(prod.ID)
+	p, err := h.repository.Delete(*prod)
 
 	if err != nil {
 		return model.Product{}, fmt.Errorf("cannot delete product: %v", err)

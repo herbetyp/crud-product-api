@@ -10,7 +10,7 @@ type User struct {
 	gorm.Model
 	ID        uint           `json:"id" gorm:"primaryKey"`
 	Username  string         `json:"username" gorm:"not null"`
-	Email     string         `json:"email" gorm:"not null"`
+	Email     string         `json:"email" gorm:"unique;not null"`
 	Password  string         `json:"password" gorm:"not null"`
 	UId       string         `json:"uid" gorm:"default:gen_random_uuid()"`
 	CreatedAt time.Time      `json:"created_at"`

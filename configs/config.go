@@ -46,7 +46,9 @@ func Init() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("toml")
+
 	err := viper.ReadInConfig()
+	
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			fmt.Printf("Error reading config file: %v\n", err)
@@ -77,6 +79,7 @@ func Init() {
 			UId: viper.GetString("admin.uid"),
 		},
 	}
+
 	if os.Getenv("GINMODE") == "local" {
 		cfg = &config{
 			API: APIConfig{

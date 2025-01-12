@@ -87,7 +87,7 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	_, err := strconv.Atoi(id)
+	prodID, err := strconv.Atoi(id)
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -108,6 +108,7 @@ func UpdateProduct(c *gin.Context) {
 	repo := &repository.ProductRepository{}
 	handler := handlers.NewProductHandler(repo)
 
+	dto.ID = uint(prodID)
 	result, err := handler.UpdateProduct(dto)
 
 	if err != nil {
@@ -127,7 +128,7 @@ func DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	_, err := strconv.Atoi(id)
+	prodID, err := strconv.Atoi(id)
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -141,7 +142,7 @@ func DeleteProduct(c *gin.Context) {
 	repo := &repository.ProductRepository{}
 	handler := handlers.NewProductHandler(repo)
 
-	result, err := handler.DeleteProduct(dto)
+	result, err := handler.DeleteProduct(dto, uint(prodID))
 
 	if err != nil {
 		c.JSON(400, gin.H{

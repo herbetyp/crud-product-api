@@ -36,24 +36,24 @@ func (r *UserRepository) GetAll() ([]model.User, error) {
 	return u, err
 }
 
-func (r *UserRepository) Update(id uint) (model.User, error) {
+func (r *UserRepository) UpdatePassw(u model.User) (model.User, error) {
 	db := database.GetDatabase()
 
-	u, err := r.Get(id)
+	user, err := r.Get(u.ID)
 
 	if err != nil {
 		return model.User{}, err
 	}
 
-	err = db.Save(&u).Error
-
-	return u, err
+	err = db.Model(&user).Where("id = ?", u.ID).Update("password", u.Password).Error
+	
+	return user, err
 }
 
-func (r *UserRepository) Delete(id uint) (model.User, error) {
+func (r *UserRepository) Delete(u model.User) (model.User, error) {
 	db := database.GetDatabase()
 
-	u, err := r.Get(id)
+	user, err := r.Get(u.ID)
 
 	if err != nil {
 		return model.User{}, err
@@ -61,5 +61,5 @@ func (r *UserRepository) Delete(id uint) (model.User, error) {
 
 	err = db.Delete(&u).Error
 
-	return u, err
+	return user, err
 }
