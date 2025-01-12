@@ -13,7 +13,7 @@ func (r *LoginRepository) GetLogin(email string) (model.User, error) {
 
 	var u model.User
 
-	err := db.First(&u, email).Error
+	err := db.Where(map[string]interface{}{"email": email}).Find(&u).First(&u).Error
 
 	return u, err
 }
