@@ -12,10 +12,10 @@ import (
 var db *gorm.DB
 
 func StartDatabase() {
-	dbConf := configs.GetConfig().DB
+	DBConf := configs.GetConfig().DB
 
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-	dbConf.Host, dbConf.Port, dbConf.User, dbConf.Password, dbConf.DBName, dbConf.SSLmode)
+		DBConf.Host, DBConf.Port, DBConf.User, DBConf.Password, DBConf.DBName, DBConf.SSLmode)
 
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
@@ -26,11 +26,10 @@ func StartDatabase() {
 	db = database
 
 	config, _ := database.DB()
-	config.SetMaxIdleConns(dbConf.SetMaxIdleConns)
-	config.SetMaxOpenConns(dbConf.SetMaxOpenConns)
-	config.SetConnMaxLifetime(dbConf.SetConnMaxLifetime)
+	config.SetMaxIdleConns(DBConf.SetMaxIdleConns)
+	config.SetMaxOpenConns(DBConf.SetMaxOpenConns)
+	config.SetConnMaxLifetime(DBConf.SetConnMaxLifetime)
 
-	
 	fmt.Printf("Connected to Postgres Database")
 	migrations.AutoMigrations(db)
 }

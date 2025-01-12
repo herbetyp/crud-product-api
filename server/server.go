@@ -15,9 +15,9 @@ type Server struct {
 }
 
 func InitServer() Server {
-	cfg := configs.GetConfig()
+	APIConf := configs.GetConfig().API
 	return Server{
-		port:   cfg.API.Port,
+		port:   APIConf.Port,
 		server: gin.Default(),
 	}
 }

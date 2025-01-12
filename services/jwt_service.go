@@ -10,18 +10,18 @@ import (
 )
 
 func GenerateToken(id uint) (string, error) {
-	conf := configs.GetConfig()
+	JWTConf := configs.GetConfig().JWT
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
-		"sub": fmt.Sprint(id),          
-		"iss": "auth-product-api",          
-		"aud": "api://product-api",    
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub": fmt.Sprint(id),
+		"iss": "auth-product-api",
+		"aud": "api://product-api",
+		"exp": time.Now().Add(time.Duration(JWTConf.ExpiresIn) * time.Second).Unix(),
 		"iat": time.Now().Unix(),
 		"jti": uuid.Must(uuid.NewRandom()).String(),
 	})
 
-	t, err := token.SignedString([]byte(conf.JWT.SecretKey))
+	t, err := token.SignedString([]byte(JWTConf.SecretKey))
 
 	if err != nil {
 		return "", err
@@ -29,7 +29,6 @@ func GenerateToken(id uint) (string, error) {
 
 	return t, nil
 }
-
 func ValidateToken(token string, uid string) (bool, string) {
 	conf := configs.GetConfig()
 
@@ -49,7 +48,7 @@ func ValidateToken(token string, uid string) (bool, string) {
 
 	// Validate claims
 	claims, _ := tokenDecoded.Claims.(jwt.MapClaims)
-	
+
 	if claims["iss"] != "auth-product-api" || claims["aud"] != "api://product-api" {
 		fmt.Printf("invalid claims\n")
 		return false, ""
