@@ -11,78 +11,94 @@ import (
 )
 
 func AuthMiddleware() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
+	return func(c *gin.Context) {
 		const BearerScheme = "Bearer "
 
-		authHeader := ctx.GetHeader("Authorization")
+		authHeader := c.GetHeader("Authorization")
+		
 		if authHeader == "" {
-			ctx.AbortWithStatusJSON(401,
-				gin.H{"error": "Request does not contain an access token"})
+			c.AbortWithStatusJSON(401,
+				gin.H{"error": "Authorization header is required"})
+			c.AddParam("auth", "unauthorized")
 			return
 		}
 
 		if len(authHeader) <= len(BearerScheme) {
-			ctx.AbortWithStatusJSON(401,
+			c.AbortWithStatusJSON(401,
 				gin.H{"error": "Invalid authorization header format"})
-			return
+				c.AddParam("auth", "unauthorized")
+				return
 		}
-		userId := ctx.Param("user_id")
 
+		userId := c.Param("user_id")
 		tokenString := authHeader[len(BearerScheme):]
+
 		isValidToken, jwtSub := services.ValidateToken(tokenString, userId)
 		if !isValidToken {
-			ctx.AbortWithStatusJSON(401, gin.H{"error": "Unauthorized"})
+			c.AbortWithStatusJSON(401, gin.H{"error": "Unauthorized"})
+			c.AddParam("auth", "unauthorized")
 			return
 		}
 
-		ctx.AddParam("jwt_sub", jwtSub)
+		c.AddParam("jwt_sub", jwtSub)
 	}
 }
 
 func AuthMiddlewareAdmin() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
+	return func(c *gin.Context) {
 		authMiddleware := AuthMiddleware()
-		authMiddleware(ctx)
+		authMiddleware(c)
 
-		conf := configs.GetConfig()
-		
-		userID, err := strconv.Atoi(ctx.Param("jwt_sub"))
-		if err != nil {
-			ctx.AbortWithStatusJSON(401, gin.H{"error": "ID has to be integer"})
+		if c.Param("auth") == "unauthorized" {
+			c.Abort()
 			return
 		}
 		
-		repo := &repositories.UserRepository{}	
+		conf := configs.GetConfig()
+
+		userID, err := strconv.Atoi(c.Param("jwt_sub"))
+		if err != nil {
+			c.JSON(401, gin.H{"error": "ID has to be integer"})
+			return
+		}
+
+		repo := &repositories.UserRepository{}
 		user, err := repo.Get(uint(userID))
 
 		if err != nil {
-			ctx.AbortWithStatusJSON(500, gin.H{"error": "Failed to get user"})
+			c.JSON(401, gin.H{"error": "Failed to get user"})
 			return
 		}
-		
+
 		if user.UId != conf.ADMIN.UId {
-			ctx.AbortWithStatusJSON(401,
+			c.JSON(401,
 				gin.H{"error": "Unauthorized"})
 			return
 		}
 
-		if ctx.Param("user_id") == ctx.Param("jwt_sub") {
-			ctx.AbortWithStatusJSON(401,
+		if c.Param("user_id") == c.Param("jwt_sub") {
+			c.AbortWithStatusJSON(401,
 				gin.H{"error": "Unauthorized"})
 			return
 		}
-	}}
+	}
+}
 func AuthMiddlewareUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
+	return func(c *gin.Context) {
 		authMiddleware := AuthMiddleware()
-		authMiddleware(ctx)
+		authMiddleware(c)
 
-		subClaim, _ := strconv.Atoi(ctx.Param("jwt_sub"))
-		userId, _ := strconv.Atoi(ctx.Param("user_id"))
+		if c.Param("auth") == "unauthorized" {
+			c.Abort()
+			return
+		}
+
+		subClaim, _ := strconv.Atoi(c.Param("jwt_sub"))
+		userId, _ := strconv.Atoi(c.Param("user_id"))
 
 		if subClaim != userId {
 			fmt.Printf("invalid user: uid not match\n")
-			ctx.AbortWithStatusJSON(401,
+			c.AbortWithStatusJSON(401,
 				gin.H{"error": "Unauthorized"})
 			return
 		}
