@@ -21,10 +21,10 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 		products.DELETE("/:product_id", controllers.DeleteProduct)
 
 		users.GET("", middlewares.AuthMiddlewareAdmin(), controllers.GetUsers)
-		users.GET("/:user_id", middlewares.AuthMiddlewareUser(), controllers.GetUser)
+		users.GET("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.GetUser)
 		users.POST("", controllers.CreateUser)
 		users.POST("/login", controllers.Login)
-		users.PATCH("/:user_id/update-passw", middlewares.AuthMiddlewareUser(), controllers.UpdateUser)
+		users.PATCH("/:user_id/update-passw", middlewares.AuthMiddlewareAdmin(), controllers.UpdateUser)
 		users.DELETE("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.DeleteUser)
 	}
 
