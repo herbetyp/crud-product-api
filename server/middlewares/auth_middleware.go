@@ -58,7 +58,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 
 		userID, err := strconv.Atoi(c.Param("jwt_sub"))
 		if err != nil {
-			c.JSON(401, gin.H{"error": "ID has to be integer"})
+			c.AbortWithStatusJSON(401, gin.H{"error": "ID has to be integer"})
 			return
 		}
 
@@ -66,12 +66,12 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 		user, err := repo.Get(uint(userID))
 
 		if err != nil {
-			c.JSON(401, gin.H{"error": "Failed to get user"})
+			c.AbortWithStatusJSON(401, gin.H{"error": "Failed to get user"})
 			return
 		}
 
 		if user.UId != conf.ADMIN.UId {
-			c.JSON(401,
+			c.AbortWithStatusJSON(401,
 				gin.H{"error": "Unauthorized"})
 			return
 		}
