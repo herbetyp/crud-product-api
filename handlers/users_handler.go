@@ -52,7 +52,7 @@ func (h *UserHandler) UpdateUser(data model.UserDTO) (model.User, error) {
 	u, err := h.repository.Update(user.ID)
 
 	if err != nil {
-		return model.User{}, fmt.Errorf("cannot update product: %v", err)
+		return model.User{}, fmt.Errorf("cannot update user: %v", err)
 	}
 
 	return u, nil
