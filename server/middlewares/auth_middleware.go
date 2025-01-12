@@ -57,9 +57,9 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 
 		AdminConf := configs.GetConfig().ADMIN
 
-		ParamuserID, err := strconv.Atoi(c.Param("user_id"))
+		ParamUserID, err := strconv.Atoi(c.Param("user_id"))
 
-		if err != nil {
+		if ParamUserID > 0 && err != nil {
 			c.AbortWithStatusJSON(401, gin.H{"error": "ID has to be integer"})
 			return
 		}
@@ -80,7 +80,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 			return
 
 		} else {
-			if ParamuserID == SubUserID {
+			if ParamUserID == SubUserID {
 				c.Next()
 				return
 			}
