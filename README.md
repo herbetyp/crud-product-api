@@ -25,10 +25,10 @@
 - [x] Authorization from **JWT Bearer Token**
 > Admin
 - [x] Create User
-- [ ] Get User
-- [ ] List Users
-- [ ] Delete User
+- [x] List Users
+- [x] Delete User
 > User / Admin
+- [x] Get User
 - [x] Reset Password
 > Products
 - [x] Create Product
