@@ -49,11 +49,13 @@
 Docker *__with docker compose module__*
 
 ```bash
+pip intall pre-commit # install pre-commit with python pip
+pre-commit install # install pre-commit hooks
 docker compose up -d # exposed in port 3000
 ```
 Runner Local Server *__Gin__*
 ```bash
-export GINMODE="local"
-docker compose up -d api_db
+export GINMODE="local" # set gin mode
+docker compose up -d api_db # run database container
 go run cmd/main.go # exposed in port 5000
 ```
