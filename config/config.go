@@ -43,7 +43,7 @@ type AdminConfig struct {
 	UId string
 }
 
-func Init() {
+func InitConfig() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("toml")
@@ -56,9 +56,9 @@ func Init() {
 			return
 		}
 	}
-	cfg = &config{}
 
-	if os.Getenv("GINMODE") == "release" {
+	switch os.Getenv("GINMODE") {
+	case "release":
 		cfg = &config{
 			API: APIConfig{
 				Port: viper.GetString("api.port"),
@@ -82,9 +82,7 @@ func Init() {
 				UId: viper.GetString("admin.uid"),
 			},
 		}
-	}
-
-	if os.Getenv("GINMODE") == "local" {
+	case "local":
 		cfg = &config{
 			API: APIConfig{
 				Port: viper.GetString("local_api.port"),
@@ -108,26 +106,26 @@ func Init() {
 				UId: viper.GetString("local_admin.uid"),
 			},
 		}
-	}
+	case "debug":
+		if os.Getenv("GINMODE") == "debug" {
+			DBPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+			JWTExpiresIn, _ := strconv.Atoi(os.Getenv("JWT_EXPIRATION_TIME"))
 
-	if os.Getenv("GINMODE") == "debug" {
-		DBPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
-		JWTExpiresIn, _ := strconv.Atoi(os.Getenv("JWT_EXPIRATION_TIME"))
+			cfg.API.Port = os.Getenv("API_PORT")
+			cfg.DB.Host = os.Getenv("DB_HOST")
+			cfg.DB.Port = DBPort
+			cfg.DB.User = os.Getenv("DB_USER")
+			cfg.DB.Password = os.Getenv("DB_PASSWORD")
+			cfg.DB.DBName = os.Getenv("DB_NAME")
+			cfg.DB.SSLmode = "disable"
+			cfg.DB.SetMaxIdleConns = 10
+			cfg.DB.SetMaxOpenConns = 100
+			cfg.DB.SetConnMaxLifetime = 60
+			cfg.JWT.SecretKey = os.Getenv("JWT_SECRET_KEY")
+			cfg.JWT.ExpiresIn = time.Duration(JWTExpiresIn)
+			cfg.ADMIN.UId = os.Getenv("ADMIN_UID")
 
-		cfg.API.Port = os.Getenv("API_PORT")
-		cfg.DB.Host = os.Getenv("DB_HOST")
-		cfg.DB.Port = DBPort
-		cfg.DB.User = os.Getenv("DB_USER")
-		cfg.DB.Password = os.Getenv("DB_PASSWORD")
-		cfg.DB.DBName = os.Getenv("DB_NAME")
-		cfg.DB.SSLmode = "disable"
-		cfg.DB.SetMaxIdleConns = 10
-		cfg.DB.SetMaxOpenConns = 100
-		cfg.DB.SetConnMaxLifetime = 60
-		cfg.JWT.SecretKey = os.Getenv("JWT_SECRET_KEY")
-		cfg.JWT.ExpiresIn = time.Duration(JWTExpiresIn)
-		cfg.ADMIN.UId = os.Getenv("ADMIN_UID")
-
+		}
 	}
 }
 func GetConfig() *config {

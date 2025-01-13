@@ -13,7 +13,7 @@ type Server struct {
 	server *gin.Engine
 }
 
-func InitServer() Server {
+func RunServer() Server {
 	APIConf := config.GetConfig().API
 
 	return Server{
