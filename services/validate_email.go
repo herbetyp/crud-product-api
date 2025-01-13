@@ -1,5 +1,9 @@
 package services
 
+import "net/mail"
+
 func ValidateEmailFormat(email string) bool {
-	return true
+	_, err := mail.ParseAddress(email)
+
+    return err == nil
 }

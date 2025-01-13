@@ -5,6 +5,7 @@ import (
 	"github.com/herbetyp/crud-product-api/handlers"
 	model "github.com/herbetyp/crud-product-api/models/login"
 	repository "github.com/herbetyp/crud-product-api/repositories"
+	service "github.com/herbetyp/crud-product-api/services"
 )
 
 func Login(c *gin.Context) {

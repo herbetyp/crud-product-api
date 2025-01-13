@@ -4,10 +4,11 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	
+
 	"github.com/herbetyp/crud-product-api/handlers"
 	model "github.com/herbetyp/crud-product-api/models/user"
 	repository "github.com/herbetyp/crud-product-api/repositories"
+	service "github.com/herbetyp/crud-product-api/services"
 )
 
 func CreateUser(c *gin.Context) {
@@ -16,6 +17,11 @@ func CreateUser(c *gin.Context) {
 	err := c.BindJSON(&dto)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	if !service.ValidateEmailFormat(dto.Email) {
+		c.JSON(400, gin.H{"error": "Invalid email format"})
 		return
 	}
 
