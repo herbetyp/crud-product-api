@@ -26,7 +26,7 @@
 > Admin
 - [x] Create User
 - [x] List Users
-- [x] Delete User
+- [x] Delete User (*_soft delete_*)
 - [x] Recovery User
 > User / Admin
 - [x] Get User
