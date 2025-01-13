@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"time"
+
 	"github.com/herbetyp/crud-product-api/database"
 	model "github.com/herbetyp/crud-product-api/models/user"
 )
@@ -14,6 +16,10 @@ func (r *LoginRepository) GetLogin(email string) (model.User, error) {
 	var u model.User
 
 	err := db.Where(map[string]interface{}{"email": email}).Find(&u).First(&u).Error
+
+	u.LastLogin = time.Now().Local()
+
+	db.Omit("updated_at").Save(&u)
 
 	return u, err
 }

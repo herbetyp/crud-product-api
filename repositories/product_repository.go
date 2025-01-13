@@ -11,7 +11,7 @@ type ProductRepository struct {
 func (r *ProductRepository) Create(p model.Product) (model.Product, error) {
 	db := database.GetDatabase()
 	
-	err := db.Create(&p).Error
+	err := db.Model(&p).Create(&p).Error
 
 	return p, err
 }
@@ -21,7 +21,7 @@ func (r *ProductRepository) Get(id uint) (model.Product, error) {
 	
 	var p model.Product
 	
-	err := db.First(&p, id).Error
+	err := db.Model(&p).First(&p, id).Error
 	
 	return p, err
 }
@@ -31,7 +31,7 @@ func (r *ProductRepository) GetAll() ([]model.Product, error) {
 
 	var p []model.Product
 
-	err := db.Find(&p).Error
+	err := db.Model(&p).Find(&p).Error
 
 	return p, err
 }
@@ -39,7 +39,7 @@ func (r *ProductRepository) GetAll() ([]model.Product, error) {
 func (r *ProductRepository) Update(p model.Product) (model.Product, error) {
 	db := database.GetDatabase()
 
-	err := db.Save(&p).Error
+	err := db.Model(&p).Save(&p).Error
 
 	return p, err
 }
@@ -47,7 +47,7 @@ func (r *ProductRepository) Update(p model.Product) (model.Product, error) {
 func (r *ProductRepository) Delete(p model.Product) (model.Product, error) {
 	db := database.GetDatabase()
 
-	err := db.Delete(&p).Error
+	err := db.Model(&p).Delete(&p).Error
 
 	return p, err
 }

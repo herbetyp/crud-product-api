@@ -11,7 +11,7 @@ type UserRepository struct {
 func (r *UserRepository) Create(u model.User) (model.User, error) {
 	db := database.GetDatabase()
 
-	err := db.Create(&u).Error
+	err := db.Model(&u).Create(&u).Error
 
 	return u, err
 }
@@ -21,7 +21,7 @@ func (r *UserRepository) Get(id uint) (model.User, error) {
 
 	var u model.User
 
-	err := db.First(&u, id).Error
+	err := db.Model(&u).First(&u, id).Error
 
 	return u, err
 }
@@ -31,7 +31,7 @@ func (r *UserRepository) GetAll() ([]model.User, error) {
 
 	var u []model.User
 
-	err := db.Find(&u).Error
+	err := db.Model(&u).Find(&u).Error
 
 	return u, err
 }
@@ -45,7 +45,7 @@ func (r *UserRepository) UpdatePassw(u model.User) (model.User, error) {
 		return model.User{}, err
 	}
 
-	err = db.Model(&user).Where("id = ?", u.ID).Update("password", u.Password).Error
+	err = db.Model(&user).Updates(model.User{Password: u.Password}).Error
 	
 	return user, err
 }
@@ -59,7 +59,7 @@ func (r *UserRepository) Delete(u model.User) (model.User, error) {
 		return model.User{}, err
 	}
 
-	err = db.Delete(&u).Error
+	err = db.Model(&user).Delete(&u).Error
 
 	return user, err
 }
