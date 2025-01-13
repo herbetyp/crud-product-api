@@ -6,5 +6,5 @@ repos:
       - id: go-lint
       - id: go-imports
       - id: go-critic
-      # - id: go-unit-tests
       - id: go-mod-tidy
+      # - id: go-unit-tests
