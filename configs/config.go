@@ -3,6 +3,7 @@ package configs
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/spf13/viper"
@@ -48,7 +49,7 @@ func Init() {
 	viper.SetConfigType("toml")
 
 	err := viper.ReadInConfig()
-	
+
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			fmt.Printf("Error reading config file: %v\n", err)
@@ -105,8 +106,27 @@ func Init() {
 			},
 		}
 	}
-}
 
+	if os.Getenv("GINMODE") == "debug" {
+		DBPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+		JWTExpiresIn, _ := strconv.Atoi(os.Getenv("JWT_EXPIRATION_TIME"))
+
+		cfg.API.Port = os.Getenv("API_PORT")
+		cfg.DB.Host = os.Getenv("DB_HOST")
+		cfg.DB.Port = DBPort
+		cfg.DB.User = os.Getenv("DB_USER")
+		cfg.DB.Password = os.Getenv("DB_PASSWORD")
+		cfg.DB.DBName = os.Getenv("DB_NAME")
+		cfg.DB.SSLmode = "disable"
+		cfg.DB.SetMaxIdleConns = 10
+		cfg.DB.SetMaxOpenConns = 100
+		cfg.DB.SetConnMaxLifetime = 60
+		cfg.JWT.SecretKey = os.Getenv("JWT_SECRET_KEY")
+		cfg.JWT.ExpiresIn = time.Duration(JWTExpiresIn)
+		cfg.ADMIN.UId = os.Getenv("ADMIN_UID")
+
+	}
+}
 func GetConfig() *config {
 	return cfg
 }
