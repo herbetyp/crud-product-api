@@ -10,14 +10,14 @@ type User struct {
 	ID        uint           `json:"id" gorm:"primaryKey"`
 	Username  string         `json:"username" gorm:"not null"`
 	Email     string         `json:"email" gorm:"unique;not null"`
-	Password  string         `json:"password" gorm:"not null"`
-	UId       string         `json:"uid" gorm:"default:gen_random_uuid()"`
+	Password  string         `json:"password,omitempty" gorm:"not null"`
+	UId       string         `json:"uid,omitempty" gorm:"default:gen_random_uuid()"`
 	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
+	UpdatedAt time.Time      `json:"updated_at,omitempty"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 	LastLogin time.Time      `json:"last_login"`
-}
 
+}
 func NewUser(username string, email string, passw string) *User {
 	return &User{
 		Username: username,

@@ -66,8 +66,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 
 		SubUserID, _ := strconv.Atoi(c.Param("jwt_sub"))
 
-		repo := &repositories.UserRepository{}
-		user, err := repo.Get(uint(SubUserID))
+		userUID, err :=  repositories.GetUID(uint(SubUserID))
 
 		if err != nil {
 			fmt.Println("Failed to get user")
@@ -75,7 +74,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 			return
 		}
 
-		if user.UId == AdminConf.UId {
+		if userUID == AdminConf.UId {
 			c.Next()
 			return
 

@@ -13,6 +13,9 @@ func (r *UserRepository) Create(u model.User) (model.User, error) {
 
 	err := db.Model(&u).Create(&u).Error
 
+	u.Password = ""
+	u.UId = ""
+
 	return u, err
 }
 
@@ -21,7 +24,7 @@ func (r *UserRepository) Get(id uint) (model.User, error) {
 
 	var u model.User
 
-	err := db.Model(&u).First(&u, id).Error
+	err := db.Model(&u).Omit("password", "uid").First(&u, id).Error
 
 	return u, err
 }
@@ -31,7 +34,7 @@ func (r *UserRepository) GetAll() ([]model.User, error) {
 
 	var u []model.User
 
-	err := db.Model(&u).Find(&u).Error
+	err := db.Model(&u).Omit("password", "uid").Find(&u).Error
 
 	return u, err
 }
@@ -45,7 +48,9 @@ func (r *UserRepository) UpdatePassw(u model.User) (model.User, error) {
 		return model.User{}, err
 	}
 
-	err = db.Model(&user).Updates(model.User{Password: u.Password}).Error
+	err = db.Model(&user).Omit("username", "email", "uid").Updates(model.User{Password: u.Password}).Error
+
+	user.Password = ""
 	
 	return user, err
 }
@@ -61,5 +66,19 @@ func (r *UserRepository) Delete(u model.User) (model.User, error) {
 
 	err = db.Model(&user).Delete(&u).Error
 
+	user.Password = ""
+	user.UId = ""
+
 	return user, err
+}
+
+
+func GetUID(id uint) (string, error) {
+	db := database.GetDatabase()
+
+	var u model.User
+
+	err := db.Model(u).Select("uid").First(&u, id).Error
+
+	return u.UId, err
 }
