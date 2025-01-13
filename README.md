@@ -27,6 +27,7 @@
 - [x] Create User
 - [x] List Users
 - [x] Delete User
+- [x] Recovery User
 > User / Admin
 - [x] Get User
 - [x] Reset Password
@@ -37,11 +38,11 @@
 - [x] Update Product
 - [x] Delete Product
 > Documentation
-- [ ] Documentation with **Swagger/OpenAPI**
+- [ ] Documentation with **Swagger**
 > Application systems
-- [ ] Log System
-- [ ] Cache System
-- [ ] Auto Migrations System
+- [ ] **Log** System
+- [ ] **Cache** System
+- [x] Auto **Migrations** System
 ---
 
 ### Run localy application:
