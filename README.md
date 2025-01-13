@@ -50,6 +50,8 @@ Docker *__with docker compose module__*
 
 ```bash
 pip intall pre-commit # install pre-commit with python pip
+go install golang.org/x/tools/cmd/goimports@latest # pre-commit hook
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.63.4 # pre-commit hook
 pre-commit install # install pre-commit hooks
 docker compose up -d # exposed in port 3000
 ```

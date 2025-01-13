@@ -1,4 +1,4 @@
-package configs
+package config
 
 import (
 	"fmt"
@@ -56,29 +56,32 @@ func Init() {
 			return
 		}
 	}
+	cfg = &config{}
 
-	cfg = &config{
-		API: APIConfig{
-			Port: viper.GetString("api.port"),
-		},
-		DB: DBConfig{
-			Host:               viper.GetString("db.host"),
-			Port:               viper.GetInt("db.port"),
-			User:               viper.GetString("db.user"),
-			Password:           viper.GetString("db.password"),
-			DBName:             viper.GetString("db.dbname"),
-			SSLmode:            viper.GetString("db.sslmode"),
-			SetMaxIdleConns:    viper.GetInt("db.set_max_idle_conns"),
-			SetMaxOpenConns:    viper.GetInt("db.set_max_open_conns"),
-			SetConnMaxLifetime: viper.GetDuration("db.set_conn_max_lifetime"),
-		},
-		JWT: JWTConfig{
-			SecretKey: viper.GetString("jwt.secret_key"),
-			ExpiresIn: viper.GetDuration("jwt.expires_in"),
-		},
-		ADMIN: AdminConfig{
-			UId: viper.GetString("admin.uid"),
-		},
+	if os.Getenv("GINMODE") == "release" {
+		cfg = &config{
+			API: APIConfig{
+				Port: viper.GetString("api.port"),
+			},
+			DB: DBConfig{
+				Host:               viper.GetString("db.host"),
+				Port:               viper.GetInt("db.port"),
+				User:               viper.GetString("db.user"),
+				Password:           viper.GetString("db.password"),
+				DBName:             viper.GetString("db.dbname"),
+				SSLmode:            viper.GetString("db.sslmode"),
+				SetMaxIdleConns:    viper.GetInt("db.set_max_idle_conns"),
+				SetMaxOpenConns:    viper.GetInt("db.set_max_open_conns"),
+				SetConnMaxLifetime: viper.GetDuration("db.set_conn_max_lifetime"),
+			},
+			JWT: JWTConfig{
+				SecretKey: viper.GetString("jwt.secret_key"),
+				ExpiresIn: viper.GetDuration("jwt.expires_in"),
+			},
+			ADMIN: AdminConfig{
+				UId: viper.GetString("admin.uid"),
+			},
+		}
 	}
 
 	if os.Getenv("GINMODE") == "local" {

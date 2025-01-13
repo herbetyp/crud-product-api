@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/herbetyp/crud-product-api/configs"
+	"github.com/herbetyp/crud-product-api/config"
 	"github.com/herbetyp/crud-product-api/database/migrations"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -12,7 +12,7 @@ import (
 var db *gorm.DB
 
 func StartDatabase() {
-	DBConf := configs.GetConfig().DB
+	DBConf := config.GetConfig().DB
 
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		DBConf.Host, DBConf.Port, DBConf.User, DBConf.Password, DBConf.DBName, DBConf.SSLmode)

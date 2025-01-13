@@ -7,5 +7,9 @@ import (
 )
 
 func AutoMigrations(db *gorm.DB) {
-	db.AutoMigrate(&pModel.Product{}, &uModel.User{})
+	err := db.AutoMigrate(&pModel.Product{}, &uModel.User{})
+
+	if err != nil {
+		panic(err)
+	}
 }

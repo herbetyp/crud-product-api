@@ -6,11 +6,11 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/herbetyp/crud-product-api/configs"
+	"github.com/herbetyp/crud-product-api/config"
 )
 
 func GenerateToken(id uint) (string, error) {
-	JWTConf := configs.GetConfig().JWT
+	JWTConf := config.GetConfig().JWT
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
 		"sub": fmt.Sprint(id),
@@ -30,7 +30,7 @@ func GenerateToken(id uint) (string, error) {
 	return t, nil
 }
 func ValidateToken(token string, uid string) (bool, string) {
-	conf := configs.GetConfig()
+	conf := config.GetConfig()
 
 	// Validate token
 	tokenDecoded, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {

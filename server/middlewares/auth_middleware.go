@@ -1,12 +1,11 @@
 package middlewares
 
 import (
-	// "fmt"
 	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/herbetyp/crud-product-api/configs"
+	"github.com/herbetyp/crud-product-api/config"
 	"github.com/herbetyp/crud-product-api/repositories"
 	"github.com/herbetyp/crud-product-api/services"
 )
@@ -55,7 +54,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 			return
 		}
 
-		AdminConf := configs.GetConfig().ADMIN
+		AdminConf := config.GetConfig().ADMIN
 
 		ParamUserID, err := strconv.Atoi(c.Param("user_id"))
 
@@ -66,7 +65,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 
 		SubUserID, _ := strconv.Atoi(c.Param("jwt_sub"))
 
-		userUID, err :=  repositories.GetUID(uint(SubUserID))
+		userUID, err := repositories.GetUID(uint(SubUserID))
 
 		if err != nil {
 			fmt.Println("Failed to get user")

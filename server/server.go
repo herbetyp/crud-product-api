@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/herbetyp/crud-product-api/configs"
+	"github.com/herbetyp/crud-product-api/config"
 	"github.com/herbetyp/crud-product-api/server/routes"
 )
 
@@ -14,7 +14,7 @@ type Server struct {
 }
 
 func InitServer() Server {
-	APIConf := configs.GetConfig().API
+	APIConf := config.GetConfig().API
 
 	return Server{
 		port:   APIConf.Port,
