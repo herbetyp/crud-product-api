@@ -16,7 +16,6 @@ type User struct {
 	UpdatedAt time.Time      `json:"updated_at,omitempty"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 	LastLogin time.Time      `json:"last_login"`
-
 }
 func NewUser(username string, email string, passw string) *User {
 	return &User{

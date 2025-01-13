@@ -119,6 +119,7 @@ func UpdateUser(c *gin.Context) {
 
 	c.JSON(200, result)
 }
+
 func DeleteUser(c *gin.Context) {
 	id := c.Param("user_id")
 	if id == "" {
@@ -142,6 +143,41 @@ func DeleteUser(c *gin.Context) {
 
 	dto.ID = uint(userID)
 	result, err := handler.DeleteUser(dto)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, result)
+}
+
+
+func RecoveryUser(c *gin.Context) {
+	id := c.Param("user_id")
+	if id == "" {
+		c.JSON(400, "Missing user ID")
+		return
+	}
+
+	userID, err := strconv.Atoi(id)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "ID has to be integer",
+		})
+		return
+	}
+
+	var dto model.UserDTO
+
+	repo := &repository.UserRepository{}
+	handler := handlers.NewUserHandler(repo)
+
+	dto.ID = uint(userID)
+	result, err := handler.RecoveryUser(dto)
 
 	if err != nil {
 		c.JSON(400, gin.H{

@@ -10,4 +10,5 @@ type IUserRepository interface {
 	UpdatePassw(u model.User) (model.User, error)
 	Get(id uint) (model.User, error)
 	GetAll() ([]model.User, error)
+	Recovery(u model.User) (model.User, error)
 }

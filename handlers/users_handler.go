@@ -72,6 +72,19 @@ func (h *UserHandler) DeleteUser(data model.UserDTO) (model.User, error) {
 	return u, nil
 }
 
+func (h *UserHandler) RecoveryUser(data model.UserDTO) (model.User, error) {
+	user := model.NewUserWithID(data.ID, data.Username, data.Email, data.Password)
+
+	u, err := h.repository.Recovery(*user)
+
+	if err != nil {
+		return model.User{}, fmt.Errorf("cannot recovery user: %v", err)
+	}
+
+	return u, nil
+}
+
+
 func NewUserHandler(r interfaces.IUserRepository) *UserHandler {
 	return &UserHandler{
 		repository: r,

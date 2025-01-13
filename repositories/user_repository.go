@@ -72,6 +72,14 @@ func (r *UserRepository) Delete(u model.User) (model.User, error) {
 	return user, err
 }
 
+func (r *UserRepository) Recovery(u model.User) (model.User, error) {
+	db := database.GetDatabase()
+
+	err := db.Unscoped().Model(&u).Where("id", u.ID).Update("deleted_at", nil).Error
+
+	return u, err
+}
+
 
 func GetUID(id uint) (string, error) {
 	db := database.GetDatabase()

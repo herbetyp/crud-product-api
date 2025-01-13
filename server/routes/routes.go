@@ -27,8 +27,9 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 		users.GET("", middlewares.AuthMiddlewareAdmin(), controllers.GetUsers)
 		users.GET("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.GetUser)
 		users.POST("", controllers.CreateUser)
-		users.PATCH("/:user_id/update-passw", middlewares.AuthMiddlewareAdmin(), controllers.UpdateUser)
+		users.PATCH("/:user_id/passwd-update", middlewares.AuthMiddlewareAdmin(), controllers.UpdateUser)
 		users.DELETE("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.DeleteUser)
+		users.POST("/:user_id/recovery", middlewares.AuthMiddlewareAdmin(), controllers.RecoveryUser)
 	}
 
 	return router
