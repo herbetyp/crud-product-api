@@ -68,7 +68,7 @@ go run cmd/main.go # exposed in port 5000
 
 - Layers
 
-![Architecture](./docs/img/architecture.png)
+  ![Architecture](./docs/img/architecture.png)
 
 <!-- - Architecture Diagram
 
