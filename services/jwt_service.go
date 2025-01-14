@@ -50,7 +50,7 @@ func ValidateToken(token string, uid string) (bool, error) {
 	// Validate claims
 	claims, _ := tokenDecoded.Claims.(jwt.MapClaims)
 
-	if claims["iss"] != "auth-product-ap" || claims["aud"] != "api://product-api" {
+	if claims["iss"] != "auth-product-api" || claims["aud"] != "api://product-api" {
 		logger.Error("invalid claim", err)
 		return false, nil
 	}
