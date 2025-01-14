@@ -57,7 +57,7 @@ func InitConfig() {
 		}
 	}
 
-	switch os.Getenv("GINMODE") {
+	switch os.Getenv("GIN_MODE") {
 	case "release":
 		cfg = &config{
 			API: APIConfig{
@@ -82,28 +82,28 @@ func InitConfig() {
 				UId: viper.GetString("admin.uid"),
 			},
 		}
-	case "local":
+	case "test":
 		cfg = &config{
 			API: APIConfig{
-				Port: viper.GetString("local_api.port"),
+				Port: viper.GetString("test_api.port"),
 			},
 			DB: DBConfig{
-				Host:               viper.GetString("local_db.host"),
-				Port:               viper.GetInt("local_db.port"),
-				User:               viper.GetString("local_db.user"),
-				Password:           viper.GetString("local_db.password"),
-				DBName:             viper.GetString("local_db.dbname"),
-				SSLmode:            viper.GetString("local_db.sslmode"),
-				SetMaxIdleConns:    viper.GetInt("local_db.set_max_idle_conns"),
-				SetMaxOpenConns:    viper.GetInt("local_db.set_max_open_conns"),
-				SetConnMaxLifetime: viper.GetDuration("local_db.set_conn_max_lifetime"),
+				Host:               viper.GetString("test_db.host"),
+				Port:               viper.GetInt("test_db.port"),
+				User:               viper.GetString("test_db.user"),
+				Password:           viper.GetString("test_db.password"),
+				DBName:             viper.GetString("test_db.dbname"),
+				SSLmode:            viper.GetString("test_db.sslmode"),
+				SetMaxIdleConns:    viper.GetInt("test_db.set_max_idle_conns"),
+				SetMaxOpenConns:    viper.GetInt("test_db.set_max_open_conns"),
+				SetConnMaxLifetime: viper.GetDuration("test_db.set_conn_max_lifetime"),
 			},
 			JWT: JWTConfig{
-				SecretKey: viper.GetString("local_jwt.secret_key"),
-				ExpiresIn: viper.GetDuration("local_jwt.expires_in"),
+				SecretKey: viper.GetString("test_jwt.secret_key"),
+				ExpiresIn: viper.GetDuration("test_jwt.expires_in"),
 			},
 			ADMIN: AdminConfig{
-				UId: viper.GetString("local_admin.uid"),
+				UId: viper.GetString("test_admin.uid"),
 			},
 		}
 	case "debug":

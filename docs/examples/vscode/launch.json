@@ -8,7 +8,7 @@
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/main.go",
             "env": {
-                "GINMODE": "debug",
+                "GIN_MODE": "debug",
                 "API_PORT": "5000",
                 "DB_HOST": "localhost",
                 "DB_PORT": "5432",

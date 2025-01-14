@@ -6,8 +6,8 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/herbetyp/crud-product-api/config"
-	"github.com/herbetyp/crud-product-api/config/logger"
+	config "github.com/herbetyp/crud-product-api/internal/configs"
+	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 )
 
 func GenerateToken(id uint) (string, error) {

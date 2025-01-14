@@ -1,0 +1,9 @@
+tests/
+docs/
+.vscode/
+.github/
+.gitignore
+TODO*
+README.*
+pre-commit-config.*
+*.env
