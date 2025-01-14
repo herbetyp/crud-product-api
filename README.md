@@ -64,12 +64,7 @@ export GINMODE="local" # set gin mode
 docker compose up -d api_db # run database container
 go run cmd/main.go # exposed in port 5000
 ```
-### Architecture
 
-- Layers
-
-  ![Architecture](./docs/img/architecture.png)
-
-<!-- - Architecture Diagram
+<!-- ### Architecture Diagram
 
 ![Architecture](./docs/img/architecture_diagram.png) -->
