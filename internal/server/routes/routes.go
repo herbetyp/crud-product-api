@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/herbetyp/crud-product-api/controllers"
-	"github.com/herbetyp/crud-product-api/server/middlewares"
+	"github.com/herbetyp/crud-product-api/internal/server/middlewares"
 )
 
 func ConfigRoutes(router *gin.Engine) *gin.Engine {

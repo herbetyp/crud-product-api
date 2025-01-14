@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	config "github.com/herbetyp/crud-product-api/configs"
+	config "github.com/herbetyp/crud-product-api/internal/configs"
 	"github.com/herbetyp/crud-product-api/repositories"
 	"github.com/herbetyp/crud-product-api/services"
 )

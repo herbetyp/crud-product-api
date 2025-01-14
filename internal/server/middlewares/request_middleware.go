@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/herbetyp/crud-product-api/configs/logger"
+	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 	zapLog "go.uber.org/zap"
 )
 

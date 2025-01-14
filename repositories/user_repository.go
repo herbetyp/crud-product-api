@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/herbetyp/crud-product-api/database"
+	"github.com/herbetyp/crud-product-api/internal/database"
 	model "github.com/herbetyp/crud-product-api/models/user"
 )
 
@@ -51,7 +51,7 @@ func (r *UserRepository) UpdatePassw(u model.User) (model.User, error) {
 	err = db.Model(&user).Omit("username", "email", "uid").Updates(model.User{Password: u.Password}).Error
 
 	user.Password = ""
-	
+
 	return user, err
 }
 
@@ -79,7 +79,6 @@ func (r *UserRepository) Recovery(u model.User) (model.User, error) {
 
 	return u, err
 }
-
 
 func GetUID(id uint) (string, error) {
 	db := database.GetDatabase()

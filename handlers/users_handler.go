@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/herbetyp/crud-product-api/interfaces"
+	"github.com/herbetyp/crud-product-api/internal/interfaces"
 	model "github.com/herbetyp/crud-product-api/models/user"
 	"github.com/herbetyp/crud-product-api/services"
 )
@@ -83,7 +83,6 @@ func (h *UserHandler) RecoveryUser(data model.UserDTO) (model.User, error) {
 
 	return u, nil
 }
-
 
 func NewUserHandler(r interfaces.IUserRepository) *UserHandler {
 	return &UserHandler{

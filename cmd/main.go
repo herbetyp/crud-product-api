@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/herbetyp/crud-product-api/configs/logger"
+	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 
-	config "github.com/herbetyp/crud-product-api/configs"
-	"github.com/herbetyp/crud-product-api/database"
-	"github.com/herbetyp/crud-product-api/server"
+	config "github.com/herbetyp/crud-product-api/internal/configs"
+	"github.com/herbetyp/crud-product-api/internal/database"
+	"github.com/herbetyp/crud-product-api/internal/server"
 )
 
 func main() {

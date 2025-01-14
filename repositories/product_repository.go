@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/herbetyp/crud-product-api/database"
+	"github.com/herbetyp/crud-product-api/internal/database"
 	model "github.com/herbetyp/crud-product-api/models/product"
 )
 
@@ -10,7 +10,7 @@ type ProductRepository struct {
 
 func (r *ProductRepository) Create(p model.Product) (model.Product, error) {
 	db := database.GetDatabase()
-	
+
 	err := db.Model(&p).Create(&p).Error
 
 	return p, err
@@ -18,11 +18,11 @@ func (r *ProductRepository) Create(p model.Product) (model.Product, error) {
 
 func (r *ProductRepository) Get(id uint) (model.Product, error) {
 	db := database.GetDatabase()
-	
+
 	var p model.Product
-	
+
 	err := db.Model(&p).First(&p, id).Error
-	
+
 	return p, err
 }
 

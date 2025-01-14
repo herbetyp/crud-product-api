@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/herbetyp/crud-product-api/interfaces"
+	"github.com/herbetyp/crud-product-api/internal/interfaces"
 	model "github.com/herbetyp/crud-product-api/models/product"
 )
 

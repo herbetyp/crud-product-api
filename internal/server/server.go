@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	config "github.com/herbetyp/crud-product-api/configs"
-	"github.com/herbetyp/crud-product-api/server/routes"
+	config "github.com/herbetyp/crud-product-api/internal/configs"
+	"github.com/herbetyp/crud-product-api/internal/server/routes"
 )
 
 type Server struct {

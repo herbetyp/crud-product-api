@@ -3,7 +3,7 @@ package repositories
 import (
 	"time"
 
-	"github.com/herbetyp/crud-product-api/database"
+	"github.com/herbetyp/crud-product-api/internal/database"
 	model "github.com/herbetyp/crud-product-api/models/user"
 )
 
