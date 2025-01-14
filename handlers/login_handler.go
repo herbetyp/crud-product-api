@@ -1,10 +1,14 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/herbetyp/crud-product-api/interfaces"
 	model "github.com/herbetyp/crud-product-api/models/login"
 	"github.com/herbetyp/crud-product-api/services"
 )
+
+const MySecret string = "abc&1*~#^2^#s0^=)^^7%b34"
 
 type LoginHandler struct {
 	repository interfaces.ILoginRepository
@@ -20,7 +24,12 @@ func (h *LoginHandler) NewLogin(l model.LoginDTO) (string, error) {
 		return "", err
 	}
 
-	token, err := services.GenerateToken(uint(user.ID))
+	fingerprint, err := services.EncryptData(fmt.Sprintf("%s:%s", user.Email, user.UId), MySecret)
+	if err != nil {
+		return "", err
+	}
+
+	token, err := services.GenerateToken(uint(user.ID), fingerprint)
 	if err != nil {
 		return "", err
 	}

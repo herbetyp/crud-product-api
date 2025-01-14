@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/herbetyp/crud-product-api/config"
+	config "github.com/herbetyp/crud-product-api/configs"
 	"github.com/herbetyp/crud-product-api/database/migrations"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

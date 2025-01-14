@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/herbetyp/crud-product-api/config/logger"
+	"github.com/herbetyp/crud-product-api/configs/logger"
 
-	"github.com/herbetyp/crud-product-api/config"
+	config "github.com/herbetyp/crud-product-api/configs"
 	"github.com/herbetyp/crud-product-api/database"
 	"github.com/herbetyp/crud-product-api/server"
 )

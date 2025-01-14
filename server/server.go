@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/herbetyp/crud-product-api/config"
+	config "github.com/herbetyp/crud-product-api/configs"
 	"github.com/herbetyp/crud-product-api/server/routes"
 )
 
