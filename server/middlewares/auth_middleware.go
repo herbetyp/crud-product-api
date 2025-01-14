@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/herbetyp/crud-product-api/config"
 	"github.com/herbetyp/crud-product-api/repositories"
 	"github.com/herbetyp/crud-product-api/services"
@@ -19,41 +20,29 @@ func AuthMiddleware() gin.HandlerFunc {
 		if authHeader == "" {
 			c.AbortWithStatusJSON(401,
 				gin.H{"error": "Authorization header is required"})
-			c.AddParam("auth", "unauthorized")
 			return
 		}
 
 		if len(authHeader) <= len(BearerScheme) {
 			c.AbortWithStatusJSON(401,
 				gin.H{"error": "Invalid authorization header format"})
-			c.AddParam("auth", "unauthorized")
 			return
 		}
 
 		ParamUserId := c.Param("user_id")
 		tokenString := authHeader[len(BearerScheme):]
 
-		isValidToken, jwtSub := services.ValidateToken(tokenString, ParamUserId)
-		if !isValidToken {
+		ok, _ := services.ValidateToken(tokenString, ParamUserId)
+
+		if !ok {
 			c.AbortWithStatusJSON(401, gin.H{"error": "Unauthorized"})
-			c.AddParam("auth", "unauthorized")
 			return
 		}
-
-		c.AddParam("jwt_sub", jwtSub)
 	}
 }
 
 func AuthMiddlewareAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authMiddleware := AuthMiddleware()
-		authMiddleware(c)
-
-		if c.Param("auth") == "unauthorized" {
-			c.Abort()
-			return
-		}
-
 		AdminConf := config.GetConfig().ADMIN
 
 		ParamUserID, err := strconv.Atoi(c.Param("user_id"))
@@ -63,7 +52,16 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 			return
 		}
 
-		SubUserID, _ := strconv.Atoi(c.Param("jwt_sub"))
+		const BearerScheme = "Bearer "
+
+		authHeader := c.GetHeader("Authorization")
+		tokenString := authHeader[len(BearerScheme):]
+
+		token, _, _ := jwt.NewParser().ParseUnverified(tokenString, jwt.MapClaims{})
+
+		claims, _ := token.Claims.(jwt.MapClaims)
+
+		SubUserID, _ := strconv.Atoi(claims["sub"].(string))
 
 		userUID, err := repositories.GetUID(uint(SubUserID))
 
@@ -76,7 +74,6 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 		if userUID == AdminConf.UId {
 			c.Next()
 			return
-
 		} else {
 			if ParamUserID == SubUserID {
 				c.Next()
