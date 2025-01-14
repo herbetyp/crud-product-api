@@ -27,6 +27,7 @@
 - [x] Create User
 - [x] List Users
 - [x] Delete User (*_soft delete_*)
+- [ ] Delete User (*hard delete_*)
 - [x] Recovery User
 > User / Admin
 - [x] Get User
@@ -40,7 +41,7 @@
 > Documentation
 - [ ] Documentation with **Swagger**
 > Application systems
-- [ ] **Log** System
+- [x] **Log** System
 - [ ] **Cache** System
 - [x] Auto **Migrations** System
 ---
