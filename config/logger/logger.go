@@ -21,16 +21,12 @@ func init() {
 		Level:       zap.NewAtomicLevelAt(getLevelLogs()),
 		Encoding:    "json",
 		EncoderConfig: zapcore.EncoderConfig{
-			LevelKey:       "level",
-			TimeKey:        "time",
-			MessageKey:     "message",
-			EncodeTime:     zapcore.ISO8601TimeEncoder,
-			EncodeLevel:    zapcore.LowercaseLevelEncoder,
-			EncodeCaller:   zapcore.ShortCallerEncoder,
-			EncodeDuration: zapcore.SecondsDurationEncoder,
-			CallerKey:      "caller",
-			StacktraceKey:  "stacktrace",
-			LineEnding:     zapcore.DefaultLineEnding,
+			LevelKey:     "level",
+			TimeKey:      "time",
+			MessageKey:   "message",
+			EncodeTime:   zapcore.ISO8601TimeEncoder,
+			EncodeLevel:  zapcore.LowercaseLevelEncoder,
+			EncodeCaller: zapcore.ShortCallerEncoder,
 		},
 	}
 
