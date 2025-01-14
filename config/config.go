@@ -107,27 +107,35 @@ func InitConfig() {
 			},
 		}
 	case "debug":
-		if os.Getenv("GINMODE") == "debug" {
-			DBPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
-			JWTExpiresIn, _ := strconv.Atoi(os.Getenv("JWT_EXPIRATION_TIME"))
+		DBPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+		JWTExpiresIn, _ := strconv.Atoi(os.Getenv("JWT_EXPIRATION_TIME"))
 
-			cfg.API.Port = os.Getenv("API_PORT")
-			cfg.DB.Host = os.Getenv("DB_HOST")
-			cfg.DB.Port = DBPort
-			cfg.DB.User = os.Getenv("DB_USER")
-			cfg.DB.Password = os.Getenv("DB_PASSWORD")
-			cfg.DB.DBName = os.Getenv("DB_NAME")
-			cfg.DB.SSLmode = "disable"
-			cfg.DB.SetMaxIdleConns = 10
-			cfg.DB.SetMaxOpenConns = 100
-			cfg.DB.SetConnMaxLifetime = 60
-			cfg.JWT.SecretKey = os.Getenv("JWT_SECRET_KEY")
-			cfg.JWT.ExpiresIn = time.Duration(JWTExpiresIn)
-			cfg.ADMIN.UId = os.Getenv("ADMIN_UID")
-
+		cfg = &config{
+			API: APIConfig{
+				Port: os.Getenv("API_PORT"),
+			},
+			DB: DBConfig{
+				Host:               os.Getenv("DB_HOST"),
+				Port:               DBPort,
+				User:               os.Getenv("DB_USER"),
+				Password:           os.Getenv("DB_PASSWORD"),
+				DBName:             os.Getenv("DB_NAME"),
+				SSLmode:            "disable",
+				SetMaxIdleConns:    10,
+				SetMaxOpenConns:    100,
+				SetConnMaxLifetime: 60,
+			},
+			JWT: JWTConfig{
+				SecretKey: os.Getenv("JWT_SECRET_KEY"),
+				ExpiresIn: time.Duration(JWTExpiresIn),
+			},
+			ADMIN: AdminConfig{
+				UId: os.Getenv("ADMIN_UID"),
+			},
 		}
 	}
 }
+
 func GetConfig() *config {
 	return cfg
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/herbetyp/crud-product-api/config"
+	"github.com/herbetyp/crud-product-api/config/logger"
 )
 
 func GenerateToken(id uint) (string, error) {
@@ -29,7 +30,7 @@ func GenerateToken(id uint) (string, error) {
 
 	return t, nil
 }
-func ValidateToken(token string, uid string) (bool, string) {
+func ValidateToken(token string, uid string) (bool, error) {
 	conf := config.GetConfig()
 
 	// Validate token
@@ -42,17 +43,17 @@ func ValidateToken(token string, uid string) (bool, string) {
 	})
 
 	if err != nil {
-		fmt.Printf("invalid token: %s\n", err)
-		return false, ""
+		logger.Error("invalid token", err)
+		return false, nil
 	}
 
 	// Validate claims
 	claims, _ := tokenDecoded.Claims.(jwt.MapClaims)
 
-	if claims["iss"] != "auth-product-api" || claims["aud"] != "api://product-api" {
-		fmt.Printf("invalid claims\n")
-		return false, ""
+	if claims["iss"] != "auth-product-ap" || claims["aud"] != "api://product-api" {
+		logger.Error("invalid claim", err)
+		return false, nil
 	}
 
-	return true, claims["sub"].(string)
+	return true, nil
 }
