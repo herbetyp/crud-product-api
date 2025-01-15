@@ -1,10 +1,12 @@
 package server
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
 	config "github.com/herbetyp/crud-product-api/internal/configs"
+	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 	"github.com/herbetyp/crud-product-api/internal/server/routes"
 )
 
@@ -24,7 +26,7 @@ func RunServer() Server {
 
 func (s *Server) Run() {
 	router := routes.ConfigRoutes(s.server)
-	log.Printf("Server running at port: %v", s.port)
+	logger.Info(fmt.Sprintf("Server running at port: %v", s.port))
 
 	log.Fatal(router.Run(":" + s.port))
 }

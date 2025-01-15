@@ -80,12 +80,12 @@ func (r *UserRepository) Recovery(u model.User) (model.User, error) {
 	return u, err
 }
 
-func GetUID(id uint) (string, error) {
+func GetInfo(id uint) (model.User, error) {
 	db := database.GetDatabase()
 
 	var u model.User
 
-	err := db.Model(u).Select("uid").First(&u, id).Error
+	err := db.Model(u).Select("uid, email", "username").First(&u, id).Error
 
-	return u.UId, err
+	return u, err
 }

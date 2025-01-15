@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	logger.Info("starting application...")
+	logger.Info("Starting application...")
 
 	// Loading App Config
 	config.InitConfig()

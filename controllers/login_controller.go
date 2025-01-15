@@ -3,8 +3,10 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/herbetyp/crud-product-api/handlers"
+	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 	model "github.com/herbetyp/crud-product-api/models/login"
 	repository "github.com/herbetyp/crud-product-api/repositories"
+	zapLog "go.uber.org/zap"
 )
 
 func Login(c *gin.Context) {
@@ -24,8 +26,20 @@ func Login(c *gin.Context) {
 	repo := &repository.LoginRepository{}
 	handler := handlers.NewLoginHandler(repo)
 
-	token, err := handler.NewLogin(dto)
-	
+	token, tokenId, err := handler.NewLogin(dto)
+
+	// Log
+	logger.Info("Token issued",
+		zapLog.String("request_id", c.Param("request_id")),
+		zapLog.String("ip", c.Param("ip")),
+		zapLog.String("email", dto.Email),
+		zapLog.String("jwt_id", tokenId),
+		zapLog.String("method", c.Param("method")),
+		zapLog.String("path", c.Param("path")),
+		zapLog.String("protocol", c.Param("protocol")),
+		zapLog.String("user_agent", c.Param("user_agent")),
+	)
+
 	if err != nil || token == "" {
 		c.AbortWithStatusJSON(401, gin.H{"error": "Invalid credentials"})
 		return

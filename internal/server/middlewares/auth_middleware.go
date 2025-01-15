@@ -7,8 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	config "github.com/herbetyp/crud-product-api/internal/configs"
+	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 	"github.com/herbetyp/crud-product-api/repositories"
 	"github.com/herbetyp/crud-product-api/services"
+	zapLog "go.uber.org/zap"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -29,15 +31,29 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		ParamUserId := c.Param("user_id")
 		tokenString := authHeader[len(BearerScheme):]
 
-		ok, _ := services.ValidateToken(tokenString, ParamUserId)
+		ok, tokenId, subId, _ := services.ValidateToken(tokenString)
 
 		if !ok {
 			c.AbortWithStatusJSON(401, gin.H{"error": "Unauthorized"})
 			return
 		}
+
+		subIdInt, _ := strconv.Atoi(subId)
+		user, _ := repositories.GetInfo(uint(subIdInt))
+		// Log
+		logger.Info("Authorized",
+			zapLog.String("request_id", c.Param("X-Request-Id")),
+			zapLog.String("ip", c.Param("ip")),
+			zapLog.String("username", user.Username),
+			zapLog.String("email", user.Email),
+			zapLog.String("jwt_id", tokenId),
+			zapLog.String("method", c.Param("method")),
+			zapLog.String("path", c.Param("path")),
+			zapLog.String("protocol", c.Param("protocol")),
+			zapLog.String("user_agent", c.Param("user_agent")),
+		)
 	}
 }
 
@@ -63,7 +79,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 
 		SubUserID, _ := strconv.Atoi(claims["sub"].(string))
 
-		userUID, err := repositories.GetUID(uint(SubUserID))
+		user, err := repositories.GetInfo(uint(SubUserID))
 
 		if err != nil {
 			fmt.Println("Failed to get user")
@@ -71,7 +87,7 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 			return
 		}
 
-		if userUID == AdminConf.UId {
+		if user.UId == AdminConf.UId {
 			c.Next()
 			return
 		} else {

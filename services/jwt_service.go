@@ -10,8 +10,9 @@ import (
 	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 )
 
-func GenerateToken(id uint) (string, error) {
+func GenerateToken(id uint) (string, string, error) {
 	JWTConf := config.GetConfig().JWT
+	tokenId := uuid.Must(uuid.NewRandom()).String()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
 		"sub": fmt.Sprint(id),
@@ -19,18 +20,18 @@ func GenerateToken(id uint) (string, error) {
 		"aud": "api://product-api",
 		"exp": time.Now().Add(time.Duration(JWTConf.ExpiresIn) * time.Second).Unix(),
 		"iat": time.Now().Unix(),
-		"jti": uuid.Must(uuid.NewRandom()).String(),
+		"jti": tokenId,
 	})
 
 	t, err := token.SignedString([]byte(JWTConf.SecretKey))
 
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return t, nil
+	return t, tokenId, nil
 }
-func ValidateToken(token string, uid string) (bool, error) {
+func ValidateToken(token string) (bool, string, string, error) {
 	conf := config.GetConfig()
 
 	// Validate token
@@ -44,7 +45,7 @@ func ValidateToken(token string, uid string) (bool, error) {
 
 	if err != nil {
 		logger.Error("invalid token", err)
-		return false, nil
+		return false, "", "", nil
 	}
 
 	// Validate claims
@@ -52,8 +53,11 @@ func ValidateToken(token string, uid string) (bool, error) {
 
 	if claims["iss"] != "auth-product-api" || claims["aud"] != "api://product-api" {
 		logger.Error("invalid claim", err)
-		return false, nil
+		return false, "", "", nil
 	}
 
-	return true, nil
+	jwtId := claims["jti"].(string)
+	SubUserID := claims["sub"].(string)
+
+	return true, jwtId, SubUserID, nil
 }

@@ -10,22 +10,22 @@ type LoginHandler struct {
 	repository interfaces.ILoginRepository
 }
 
-func (h *LoginHandler) NewLogin(l model.LoginDTO) (string, error) {
+func (h *LoginHandler) NewLogin(l model.LoginDTO) (string, string, error) {
 	user, err := h.repository.GetLogin(l.Email)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	if user.Password != services.SHA512Encoder(l.Password) {
-		return "", err
+		return "", "", err
 	}
 
-	token, err := services.GenerateToken(uint(user.ID))
+	token, tokenId, err := services.GenerateToken(uint(user.ID))
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return token, nil
+	return token, tokenId, nil
 }
 func NewLoginHandler(r interfaces.ILoginRepository) *LoginHandler {
 	return &LoginHandler{
