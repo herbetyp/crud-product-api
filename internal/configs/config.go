@@ -16,6 +16,7 @@ type config struct {
 	DB    DBConfig
 	JWT   JWTConfig
 	ADMIN AdminConfig
+	CACHE CacheConfig
 }
 
 type APIConfig struct {
@@ -41,6 +42,15 @@ type JWTConfig struct {
 
 type AdminConfig struct {
 	UId string
+}
+
+type CacheConfig struct {
+	User      string
+	Password  string
+	Host      string
+	Port      string
+	Db        int
+	ExpiresIn time.Duration
 }
 
 func InitConfig() {
@@ -81,6 +91,14 @@ func InitConfig() {
 			ADMIN: AdminConfig{
 				UId: viper.GetString("admin.uid"),
 			},
+			CACHE: CacheConfig{
+				User:      viper.GetString("cache.user"),
+				Password:  viper.GetString("cache.password"),
+				Host:      viper.GetString("cache.host"),
+				Port:      viper.GetString("cache.port"),
+				Db:        viper.GetInt("cache.db"),
+				ExpiresIn: viper.GetDuration("cache.expires_in"),
+			},
 		}
 	case "test":
 		cfg = &config{
@@ -105,10 +123,20 @@ func InitConfig() {
 			ADMIN: AdminConfig{
 				UId: viper.GetString("test_admin.uid"),
 			},
+			CACHE: CacheConfig{
+				User:      viper.GetString("test_cache.user"),
+				Password:  viper.GetString("test_cache.password"),
+				Host:      viper.GetString("test_cache.host"),
+				Port:      viper.GetString("test_cache.port"),
+				Db:        viper.GetInt("test_cache.db"),
+				ExpiresIn: viper.GetDuration("test_cache.expires_in"),
+			},
 		}
 	case "debug":
 		DBPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
-		JWTExpiresIn, _ := strconv.Atoi(os.Getenv("JWT_EXPIRATION_TIME"))
+		JWTExpiresIn, _ := strconv.Atoi(os.Getenv("JWT_EXPIRATION_IN"))
+		CachexpiresIn, _ := strconv.Atoi(os.Getenv("CACHE_EXPIRATION_IN"))
+		CacheDB, _ := strconv.Atoi(os.Getenv("CACHE_DB"))
 
 		cfg = &config{
 			API: APIConfig{
@@ -131,6 +159,14 @@ func InitConfig() {
 			},
 			ADMIN: AdminConfig{
 				UId: os.Getenv("ADMIN_UID"),
+			},
+			CACHE: CacheConfig{
+				User:      os.Getenv("CACHE_USER"),
+				Password:  os.Getenv("CACHE_PASSWORD"),
+				Host:      os.Getenv("CACHE_HOST"),
+				Port:      os.Getenv("CACHE_PORT"),
+				Db:        CacheDB,
+				ExpiresIn: time.Duration(CachexpiresIn),
 			},
 		}
 	}

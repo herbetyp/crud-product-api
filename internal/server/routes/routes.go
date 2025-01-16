@@ -13,6 +13,8 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 
 	users := base_url.Group("/users", middlewares.AuthMiddleware())
 
+	creatUser := base_url.Group("/users")
+
 	base_url.POST("/oauth2/token", controllers.Login)
 
 	{
@@ -26,7 +28,7 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 
 		users.GET("", middlewares.AuthMiddlewareAdmin(), controllers.GetUsers)
 		users.GET("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.GetUser)
-		users.POST("", controllers.CreateUser)
+		creatUser.POST("", controllers.CreateUser)
 		users.PATCH("/:user_id/passwd-update", middlewares.AuthMiddlewareAdmin(), controllers.UpdateUser)
 		users.DELETE("/:user_id", middlewares.AuthMiddlewareAdmin(), controllers.DeleteUser)
 		users.POST("/:user_id/recovery", middlewares.AuthMiddlewareAdmin(), controllers.RecoveryUser)

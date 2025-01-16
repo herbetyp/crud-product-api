@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/herbetyp/crud-product-api/internal/configs/logger"
+	"github.com/herbetyp/crud-product-api/services"
 
 	config "github.com/herbetyp/crud-product-api/internal/configs"
 	"github.com/herbetyp/crud-product-api/internal/database"
@@ -13,6 +14,9 @@ func main() {
 
 	// Loading App Config
 	config.InitConfig()
+
+	// Loading Cache
+	services.StartCache()
 
 	// Connecting on Database
 	database.StartDatabase()

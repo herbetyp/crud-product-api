@@ -18,3 +18,10 @@ set_conn_max_lifetime = 60
 [local_jwt]
 secret_key = "@MyS3crEt"
 expires_in = 7200
+
+[cache]
+user = "username"
+host = "product_api_go_cache"
+port = "6379"
+password = "mypasswordcache"
+db = 0

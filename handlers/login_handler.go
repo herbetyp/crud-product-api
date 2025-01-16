@@ -1,26 +1,44 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/herbetyp/crud-product-api/internal/interfaces"
-	model "github.com/herbetyp/crud-product-api/models/login"
+	loginModel "github.com/herbetyp/crud-product-api/models/login"
+	userModel "github.com/herbetyp/crud-product-api/models/user"
 	"github.com/herbetyp/crud-product-api/services"
+)
+
+const (
+	USER_PREFIX = "user>>>"
 )
 
 type LoginHandler struct {
 	repository interfaces.ILoginRepository
 }
 
-func (h *LoginHandler) NewLogin(l model.LoginDTO) (string, string, error) {
-	user, err := h.repository.GetLogin(l.Email)
-	if err != nil {
-		return "", "", err
+func (h *LoginHandler) NewLogin(l loginModel.LoginDTO) (string, string, error) {
+	var u userModel.User
+	cacheKey := USER_PREFIX + l.Email
+
+	if cachedData := services.GetCache(cacheKey); cachedData != "" {
+		err := json.Unmarshal([]byte(cachedData), &u)
+		if err != nil {
+			u, err = h.repository.GetLogin(l.Email)
+			if err != nil {
+				return "", "", err
+			}
+			cacheValue, _ := json.Marshal(u)
+			services.SetCache(cacheKey, string(cacheValue))
+		}
 	}
 
-	if user.Password != services.SHA512Encoder(l.Password) {
-		return "", "", err
+	if u.Password != services.SHA512Encoder(l.Password) {
+		return "", "", fmt.Errorf("invalid password")
 	}
 
-	token, tokenId, err := services.GenerateToken(uint(user.ID))
+	token, tokenId, err := services.GenerateToken(uint(u.ID))
 	if err != nil {
 		return "", "", err
 	}

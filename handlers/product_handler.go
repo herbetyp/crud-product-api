@@ -1,10 +1,16 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/herbetyp/crud-product-api/internal/interfaces"
 	model "github.com/herbetyp/crud-product-api/models/product"
+	service "github.com/herbetyp/crud-product-api/services"
+)
+
+const (
+	PRODUCT_PREFIX = "product>>>"
 )
 
 type ProductHandler struct {
@@ -20,14 +26,28 @@ func (h *ProductHandler) CreateProduct(data model.ProductDTO) (model.Product, er
 		return model.Product{}, fmt.Errorf("cannot create product: %v", err)
 	}
 
+	bytes, _ := json.Marshal(p)
+	service.SetCache(fmt.Sprintf("%d", p.ID), string(bytes))
+
 	return p, nil
 }
 
 func (h *ProductHandler) GetProduct(id uint) (model.Product, error) {
-	p, err := h.repository.Get(id)
+	var p model.Product
+	cacheKey := PRODUCT_PREFIX + fmt.Sprintf("%d", id)
 
-	if err != nil {
-		return model.Product{}, fmt.Errorf("cannot find product: %v", err)
+	if cachedData := service.GetCache(cacheKey); cachedData != "" {
+		err := json.Unmarshal([]byte(cachedData), &p)
+		if err != nil {
+			return model.Product{}, nil
+		}
+	} else {
+		p, err := h.repository.Get(id)
+		if err != nil {
+			return model.Product{}, fmt.Errorf("cannot find product: %v", err)
+		}
+		cacheValue, _ := json.Marshal(p)
+		service.SetCache(cacheKey, string(cacheValue))
 	}
 
 	return p, nil
@@ -51,6 +71,8 @@ func (h *ProductHandler) UpdateProduct(data model.ProductDTO) (model.Product, er
 	if err != nil {
 		return model.Product{}, fmt.Errorf("cannot update product: %v", err)
 	}
+
+	service.DeleteCache(fmt.Sprintf("%d", p.ID))
 
 	return p, nil
 }
