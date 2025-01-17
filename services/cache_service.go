@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	config "github.com/herbetyp/crud-product-api/internal/configs"
@@ -16,8 +17,8 @@ var cache *redis.Client
 func StartCache() {
 	cacheConf := config.GetConfig().CACHE
 
-	addr := cacheConf.Host + ":" + cacheConf.Port
-	url := "redis://" + cacheConf.User + ":" + cacheConf.Password + "@" + addr
+	addr := cacheConf.Host + ":" + cacheConf.Port + "/" + strconv.Itoa(cacheConf.Db)
+	url := "redis://" + ":" + cacheConf.Password + "@" + addr + "?protocol=3"
 
 	newCache, err := redis.ParseURL(url)
 	if err != nil {

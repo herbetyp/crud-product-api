@@ -27,7 +27,7 @@ func (h *ProductHandler) CreateProduct(data model.ProductDTO) (model.Product, er
 	}
 
 	bytes, _ := json.Marshal(p)
-	service.SetCache(PRODUCT_PREFIX+p.Code, string(bytes))
+	service.SetCache(PRODUCT_PREFIX+fmt.Sprintf("%d", p.ID), string(bytes))
 
 	return p, nil
 }

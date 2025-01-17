@@ -45,7 +45,6 @@ type AdminConfig struct {
 }
 
 type CacheConfig struct {
-	User      string
 	Password  string
 	Host      string
 	Port      string
@@ -92,7 +91,6 @@ func InitConfig() {
 				UId: viper.GetString("admin.uid"),
 			},
 			CACHE: CacheConfig{
-				User:      viper.GetString("cache.user"),
 				Password:  viper.GetString("cache.password"),
 				Host:      viper.GetString("cache.host"),
 				Port:      viper.GetString("cache.port"),
@@ -124,7 +122,6 @@ func InitConfig() {
 				UId: viper.GetString("test_admin.uid"),
 			},
 			CACHE: CacheConfig{
-				User:      viper.GetString("test_cache.user"),
 				Password:  viper.GetString("test_cache.password"),
 				Host:      viper.GetString("test_cache.host"),
 				Port:      viper.GetString("test_cache.port"),
@@ -161,7 +158,6 @@ func InitConfig() {
 				UId: os.Getenv("ADMIN_UID"),
 			},
 			CACHE: CacheConfig{
-				User:      os.Getenv("CACHE_USER"),
 				Password:  os.Getenv("CACHE_PASSWORD"),
 				Host:      os.Getenv("CACHE_HOST"),
 				Port:      os.Getenv("CACHE_PORT"),
