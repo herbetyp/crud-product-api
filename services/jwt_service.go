@@ -1,6 +1,7 @@
 package services
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"time"
 
@@ -18,7 +19,9 @@ func GetJwtClaims(tokenString string) (jwt.MapClaims, error) {
 }
 
 func GenerateFingerprint(f string) string {
-	return SHA512Encoder(f)
+	stringEncoded := sha256.Sum256([]byte(f))
+
+	return fmt.Sprintf("%x", stringEncoded)
 }
 
 func GenerateToken(id uint, fingerprintPlainTex string) (string, string, error) {

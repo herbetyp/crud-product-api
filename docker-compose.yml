@@ -28,11 +28,9 @@ services:
     ports:
       - "6379:6379"
     command: sh -c redis-server --requirepass $$REDIS_PASSWORD
-    depends_on:
-      - product_api_go_app
     volumes:
-      - redisdata:/data
+      - rdbdata:/redis/data
 
 volumes:
   pgdata: {}
-  redisdata: {}
+  rdbdata: {}
