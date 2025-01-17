@@ -29,6 +29,8 @@ func (h *ProductHandler) CreateProduct(data model.ProductDTO) (model.Product, er
 	bytes, _ := json.Marshal(p)
 	service.SetCache(PRODUCT_PREFIX+fmt.Sprintf("%d", p.ID), string(bytes))
 
+	service.DeleteCache(PRODUCT_PREFIX + "all")
+
 	return p, nil
 }
 
@@ -55,10 +57,24 @@ func (h *ProductHandler) GetProduct(id uint) (model.Product, error) {
 	return p, nil
 }
 func (h *ProductHandler) GetProducts() ([]model.Product, error) {
-	ps, err := h.repository.GetAll()
+	var ps []model.Product
+	cacheKey := PRODUCT_PREFIX + "all"
 
-	if err != nil {
-		return nil, fmt.Errorf("cannot find products: %v", err)
+	if cachedData := service.GetCache(cacheKey); cachedData != "" {
+		err := json.Unmarshal([]byte(cachedData), &ps)
+		if err != nil {
+			return []model.Product{}, nil
+		}
+	} else {
+		ps, err := h.repository.GetAll()
+		if err != nil {
+			return nil, fmt.Errorf("cannot find products: %v", err)
+		}
+
+		cacheValue, _ := json.Marshal(ps)
+		service.SetCache(cacheKey, string(cacheValue))
+
+		return ps, nil
 	}
 
 	return ps, nil
@@ -73,7 +89,7 @@ func (h *ProductHandler) UpdateProduct(data model.ProductDTO) (model.Product, er
 		return model.Product{}, fmt.Errorf("cannot update product: %v", err)
 	}
 
-	service.DeleteCache(fmt.Sprintf("%d", p.ID))
+	service.DeleteCache(fmt.Sprintf("%s%d", PRODUCT_PREFIX, p.ID))
 
 	return p, nil
 }
