@@ -10,17 +10,29 @@ import (
 	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 )
 
-func GenerateToken(id uint) (string, string, error) {
+func GetJwtClaims(tokenString string) (jwt.MapClaims, error) {
+	token, _, _ := jwt.NewParser().ParseUnverified(tokenString, jwt.MapClaims{})
+	claims, _ := token.Claims.(jwt.MapClaims)
+
+	return claims, nil
+}
+
+func GenerateFingerprint(f string) string {
+	return SHA512Encoder(f)
+}
+
+func GenerateToken(id uint, fingerprintPlainTex string) (string, string, error) {
 	JWTConf := config.GetConfig().JWT
 	tokenId := uuid.Must(uuid.NewRandom()).String()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
-		"sub": fmt.Sprint(id),
-		"iss": "auth-product-api",
-		"aud": "api://product-api",
-		"exp": time.Now().Add(time.Duration(JWTConf.ExpiresIn) * time.Second).Unix(),
-		"iat": time.Now().Unix(),
-		"jti": tokenId,
+		"sub":         fmt.Sprint(id),
+		"fingerprint": fingerprintPlainTex,
+		"iss":         "auth-product-api",
+		"aud":         "api://product-api",
+		"exp":         time.Now().Add(time.Duration(JWTConf.ExpiresIn) * time.Second).Unix(),
+		"iat":         time.Now().Unix(),
+		"jti":         tokenId,
 	})
 
 	t, err := token.SignedString([]byte(JWTConf.SecretKey))
@@ -31,7 +43,8 @@ func GenerateToken(id uint) (string, string, error) {
 
 	return t, tokenId, nil
 }
-func ValidateToken(token string) (bool, string, string, error) {
+
+func ValidateToken(token string) (bool, jwt.MapClaims, error) {
 	conf := config.GetConfig()
 
 	// Validate token
@@ -44,20 +57,17 @@ func ValidateToken(token string) (bool, string, string, error) {
 	})
 
 	if err != nil {
-		logger.Error("invalid token", err)
-		return false, "", "", nil
+		logger.Error("invalid token: ", err)
+		return false, jwt.MapClaims{}, err
 	}
+
+	claims, _ := GetJwtClaims(tokenDecoded.Raw)
 
 	// Validate claims
-	claims, _ := tokenDecoded.Claims.(jwt.MapClaims)
-
 	if claims["iss"] != "auth-product-api" || claims["aud"] != "api://product-api" {
-		logger.Error("invalid claim", err)
-		return false, "", "", nil
+		logger.Error("invalid claim: ", err)
+		return false, jwt.MapClaims{}, err
 	}
 
-	jwtId := claims["jti"].(string)
-	SubUserID := claims["sub"].(string)
-
-	return true, jwtId, SubUserID, nil
+	return true, claims, nil
 }

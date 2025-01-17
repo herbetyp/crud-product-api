@@ -59,7 +59,7 @@ func GetUser(c *gin.Context) {
 	repo := &repository.UserRepository{}
 	handler := handlers.NewUserHandler(repo)
 
-	result, err := handler.GetUser(uint(userId))
+	result, err := handler.GetUser(uint(userId), true)
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -159,7 +159,6 @@ func DeleteUser(c *gin.Context) {
 
 	c.JSON(200, result)
 }
-
 
 func RecoveryUser(c *gin.Context) {
 	id := c.Param("user_id")

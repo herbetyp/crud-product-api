@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/herbetyp/crud-product-api/handlers"
+	config "github.com/herbetyp/crud-product-api/internal/configs"
 	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 	model "github.com/herbetyp/crud-product-api/models/login"
 	repository "github.com/herbetyp/crud-product-api/repositories"
@@ -14,11 +15,14 @@ func Login(c *gin.Context) {
 
 	err := c.BindJSON(&dto)
 	if err != nil {
+		logger.Error("Invalid payload: ", err)
 		c.JSON(400, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
 	if dto.GranType != "client_credentials" {
+		var err error
+		logger.Error("Invalid grant type: ", err, zapLog.String("grant_type", dto.GranType))
 		c.AbortWithStatusJSON(400, gin.H{"error": "Invalid grant type"})
 		return
 	}
@@ -27,6 +31,12 @@ func Login(c *gin.Context) {
 	handler := handlers.NewLoginHandler(repo)
 
 	token, tokenId, err := handler.NewLogin(dto)
+
+	if err != nil || token == "" {
+		logger.Error("Error on login", err)
+		c.AbortWithStatusJSON(401, gin.H{"error": "Invalid credentials"})
+		return
+	}
 
 	// Log
 	logger.Info("Token issued",
@@ -40,10 +50,6 @@ func Login(c *gin.Context) {
 		zapLog.String("user_agent", c.Param("user_agent")),
 	)
 
-	if err != nil || token == "" {
-		c.AbortWithStatusJSON(401, gin.H{"error": "Invalid credentials"})
-		return
-	}
-
-	c.JSON(200, gin.H{"token": token, "token_type": "Bearer", "expires_in": 3600})
+	JWTConf := config.GetConfig().JWT
+	c.JSON(200, gin.H{"access_token": token, "token_type": "Bearer", "expires_in": JWTConf.ExpiresIn})
 }

@@ -1,7 +1,7 @@
 services:
   product_api_go_app:
     container_name: product_api_go_app
-    restart: always
+    restart: on-failure
     build: .
     env_file:
       - app.env
@@ -12,7 +12,7 @@ services:
   product_api_go_db:
     container_name: product_api_go_db
     image: postgres:17.2-alpine3.21
-    restart: always
+    restart: on-failure
     env_file:
       - db.env
     ports:
@@ -22,12 +22,12 @@ services:
   product_api_go_cache:
     container_name: product_api_go_cache
     image: redis:7.4.2-alpine3.21
-    restart: unless-stopped
+    restart: always
     env_file:
       - cache.env
     ports:
       - "6379:6379"
-    command: sh -c "redis-server --requirepass $$REDIS_PASSWORD"
+    command: sh -c redis-server --requirepass $$REDIS_PASSWORD
     depends_on:
       - product_api_go_app
     volumes:

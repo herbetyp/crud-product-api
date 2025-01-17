@@ -26,8 +26,8 @@ func (h *UserHandler) CreateUser(data model.UserDTO) (model.User, error) {
 	return u, nil
 }
 
-func (h *UserHandler) GetUser(id uint) (model.User, error) {
-	u, err := h.repository.Get(id)
+func (h *UserHandler) GetUser(id uint, sensibleFilter bool) (model.User, error) {
+	u, err := h.repository.Get(id, sensibleFilter)
 
 	if err != nil {
 		return model.User{}, fmt.Errorf("cannot find user: %v", err)

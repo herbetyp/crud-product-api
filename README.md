@@ -14,7 +14,9 @@
 - [Docker](https://www.docker.com/)
 - [Gin Web Framwork](https://gin-gonic.com/)
 - [GORM](https://gorm.io/index.html)
-<!-- - [Swagger](https://swagger.io/) (documentation)
+- [Redis](https://redis.io/)
+<!-- - [NGnix](https://nginx.org/)
+- [Swagger](https://swagger.io/) (documentation)
 - [Heroku](https://www.heroku.com/) (cloud platform) -->
 
 
@@ -27,7 +29,7 @@
 - [x] Create User
 - [x] List Users
 - [x] Delete User (*_soft delete_*)
-- [ ] Delete User (*hard delete_*)
+- [ ] Delete User (*_hard delete_*)
 - [x] Recovery User
 > User / Admin
 - [x] Get User
@@ -44,6 +46,7 @@
 - [x] **Log** System
 - [x] **Cache** System
 - [x] Auto **Migrations** System
+- [ ] **NGnix** proxy System
 ---
 
 ### Run localy application:
@@ -62,7 +65,7 @@ docker compose up -d # exposed in port 3000
 Runner Local Server *__Gin__*
 ```bash
 export GIN_MODE="test" # set gin mode
-docker compose up -d product_api_go_db # run database container
+docker compose up -d product_api_go_db product_api_go_cache # run database/cache container
 go run cmd/main.go # exposed in port 5000
 ```
 

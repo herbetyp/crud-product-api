@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 	"github.com/herbetyp/crud-product-api/internal/interfaces"
 	loginModel "github.com/herbetyp/crud-product-api/models/login"
 	userModel "github.com/herbetyp/crud-product-api/models/user"
@@ -19,27 +20,36 @@ type LoginHandler struct {
 }
 
 func (h *LoginHandler) NewLogin(l loginModel.LoginDTO) (string, string, error) {
-	var u userModel.User
-	cacheKey := USER_PREFIX + l.Email
+	var user userModel.User
 
-	if cachedData := services.GetCache(cacheKey); cachedData != "" {
-		err := json.Unmarshal([]byte(cachedData), &u)
+	fing := services.GenerateFingerprint(l.Email)
+	cacheKey := USER_PREFIX + fing
+
+	cacheData := services.GetCache(cacheKey)
+	if cacheData != "" {
+		err := json.Unmarshal([]byte(cacheData), &user)
 		if err != nil {
-			u, err = h.repository.GetLogin(l.Email)
-			if err != nil {
-				return "", "", err
-			}
-			cacheValue, _ := json.Marshal(u)
-			services.SetCache(cacheKey, string(cacheValue))
+			return "", "", err
 		}
+	} else {
+		u, err := h.repository.GetLogin(l.Email)
+		if err != nil {
+			logger.Error("error on get user from database: %v", err)
+			return "", "", err
+		}
+		cacheValue, _ := json.Marshal(u)
+		services.SetCache(cacheKey, string(cacheValue))
+		user = u
 	}
 
-	if u.Password != services.SHA512Encoder(l.Password) {
+	passwordMatch := services.SHA512Encoder(l.Password)
+	if user.Password != passwordMatch {
 		return "", "", fmt.Errorf("invalid password")
 	}
 
-	token, tokenId, err := services.GenerateToken(uint(u.ID))
+	token, tokenId, err := services.GenerateToken(user.ID, fing)
 	if err != nil {
+		logger.Error("Error on generate token: %v", err)
 		return "", "", err
 	}
 

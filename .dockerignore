@@ -7,3 +7,5 @@ TODO*
 README.*
 pre-commit-config.*
 *.env
+Dokcerfile
+docker-compose.yml

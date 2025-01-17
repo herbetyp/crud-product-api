@@ -19,14 +19,19 @@ func (r *UserRepository) Create(u model.User) (model.User, error) {
 	return u, err
 }
 
-func (r *UserRepository) Get(id uint) (model.User, error) {
+func (r *UserRepository) Get(id uint, sensibleFilter bool) (model.User, error) {
 	db := database.GetDatabase()
 
 	var u model.User
 
-	err := db.Model(&u).Omit("password", "uid").First(&u, id).Error
+	if sensibleFilter {
+		err := db.Model(&u).Omit("password", "uid").First(&u, id).Error
 
-	return u, err
+		return u, err
+	} else {
+		err := db.Model(&u).First(&u, id).Error
+		return u, err
+	}
 }
 
 func (r *UserRepository) GetAll() ([]model.User, error) {
@@ -42,7 +47,7 @@ func (r *UserRepository) GetAll() ([]model.User, error) {
 func (r *UserRepository) UpdatePassw(u model.User) (model.User, error) {
 	db := database.GetDatabase()
 
-	user, err := r.Get(u.ID)
+	user, err := r.Get(u.ID, true)
 
 	if err != nil {
 		return model.User{}, err
@@ -58,7 +63,7 @@ func (r *UserRepository) UpdatePassw(u model.User) (model.User, error) {
 func (r *UserRepository) Delete(u model.User) (model.User, error) {
 	db := database.GetDatabase()
 
-	user, err := r.Get(u.ID)
+	user, err := r.Get(u.ID, true)
 
 	if err != nil {
 		return model.User{}, err

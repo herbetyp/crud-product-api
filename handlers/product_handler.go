@@ -27,7 +27,7 @@ func (h *ProductHandler) CreateProduct(data model.ProductDTO) (model.Product, er
 	}
 
 	bytes, _ := json.Marshal(p)
-	service.SetCache(fmt.Sprintf("%d", p.ID), string(bytes))
+	service.SetCache(PRODUCT_PREFIX+p.Code, string(bytes))
 
 	return p, nil
 }
@@ -48,11 +48,12 @@ func (h *ProductHandler) GetProduct(id uint) (model.Product, error) {
 		}
 		cacheValue, _ := json.Marshal(p)
 		service.SetCache(cacheKey, string(cacheValue))
+
+		return p, nil
 	}
 
 	return p, nil
 }
-
 func (h *ProductHandler) GetProducts() ([]model.Product, error) {
 	ps, err := h.repository.GetAll()
 

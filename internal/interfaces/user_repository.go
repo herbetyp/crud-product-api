@@ -8,7 +8,7 @@ type IUserRepository interface {
 	Create(u model.User) (model.User, error)
 	Delete(u model.User) (model.User, error)
 	UpdatePassw(u model.User) (model.User, error)
-	Get(id uint) (model.User, error)
+	Get(id uint, sensibleFilter bool) (model.User, error)
 	GetAll() ([]model.User, error)
 	Recovery(u model.User) (model.User, error)
 }

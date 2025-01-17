@@ -21,16 +21,17 @@ func StartCache() {
 
 	newCache, err := redis.ParseURL(url)
 	if err != nil {
-		logger.Error("Error parsing cache URL", err)
+		logger.Error("error parsing cache URL", err)
 	}
 
 	cache = redis.NewClient(newCache)
 
 	if err := cache.Ping(ctx).Err(); err != nil {
-		logger.Error("Error connecting to cache", err)
+		logger.Error("error connecting to cache", err)
+		return
 	}
 
-	logger.Info("Connected to cache at port: " + cacheConf.Port)
+	logger.Info("connected to cache at port: " + cacheConf.Port)
 }
 
 func GetCache(key string) string {
@@ -41,18 +42,20 @@ func GetCache(key string) string {
 	return val
 }
 
-func SetCache(key string, value string) {
+func SetCache(key string, value string) string {
 	var ttl = config.GetConfig().CACHE.ExpiresIn
 
 	err := cache.Set(ctx, key, value, ttl*time.Second).Err()
 	if err != nil {
-		logger.Error("Error setting cache", err)
+		logger.Error("error setting cache", err)
 	}
+
+	return value
 }
 
 func DeleteCache(key string) {
 	err := cache.Del(ctx, key).Err()
 	if err != nil {
-		logger.Error("Error deleting cache", err)
+		logger.Error("error deleting cache", err)
 	}
 }
