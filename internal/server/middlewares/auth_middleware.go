@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -41,34 +41,31 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		var u userModel.User
+		var user userModel.User
 
 		USER_PREFIX := "user>>>"
 		cacheKey := USER_PREFIX + claims["fingerprint"].(string)
 
-		cacheData := services.GetCache(cacheKey)
-		if cacheData != "" {
-			err := json.Unmarshal([]byte(cacheData), &u)
+		repo := &repository.UserRepository{}
+		handler := handlers.NewUserHandler(repo)
+
+		cached := services.GetCache(cacheKey, &user)
+		if cached == "" {
+			sub, _ := strconv.ParseUint(claims["sub"].(string), 10, 32)
+			u, err := handler.GetUser(uint(sub), false)
 			if err != nil {
+				logger.Error("error on get user from database: %v", err)
 				return
 			}
-		} else {
-			repo := &repository.UserRepository{}
-			handler := handlers.NewUserHandler(repo)
-
-			sub, _ := strconv.ParseUint(claims["sub"].(string), 10, 32)
-			u, _ = handler.GetUser(uint(sub), false)
-
-			cacheValue, _ := json.Marshal(u)
-			services.SetCache(cacheKey, string(cacheValue))
+			services.SetCache(cacheKey, &u)
 		}
 
 		// Log
 		logger.Info("Authorized",
 			zapLog.String("request_id", c.Param("X-Request-Id")),
 			zapLog.String("ip", c.Param("ip")),
-			zapLog.String("username", u.Username),
-			zapLog.String("email", u.Email),
+			zapLog.String("username", user.Username),
+			zapLog.String("email", user.Email),
 			zapLog.String("jwt_id", claims["jti"].(string)),
 			zapLog.String("method", c.Param("method")),
 			zapLog.String("path", c.Param("path")),
@@ -83,11 +80,6 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 		AdminConf := config.GetConfig().ADMIN
 
 		ParamUserID, _ := strconv.Atoi(c.Param("user_id"))
-
-		// if ParamUserID > 0 && err != nil {
-		// 	c.AbortWithStatusJSON(401, gin.H{"error": "ID has to be integer"})
-		// 	return
-		// }
 
 		const BearerScheme = "Bearer "
 
@@ -105,20 +97,20 @@ func AuthMiddlewareAdmin() gin.HandlerFunc {
 		USER_PREFIX := "user>>>"
 		cacheKey := USER_PREFIX + claims["fingerprint"].(string)
 
-		cacheData := services.GetCache(cacheKey)
-		if cacheData != "" {
-			err := json.Unmarshal([]byte(cacheData), &u)
+		repo := &repository.UserRepository{}
+		handler := handlers.NewUserHandler(repo)
+
+		sub, _ := strconv.ParseUint(claims["sub"].(string), 10, 32)
+		u, _ = handler.GetUser(uint(sub), false)
+
+		cached := services.GetCache(cacheKey, &u)
+		if cached == "" {
+			u, err := handler.GetUser(uint(sub), false)
 			if err != nil {
+				logger.Error("error on get user from database: %v", err)
 				return
 			}
-		} else {
-			repo := &repository.UserRepository{}
-			handler := handlers.NewUserHandler(repo)
-
-			u, _ := handler.GetUser((uint(claims["sub"].(float64))), false)
-
-			cacheValue, _ := json.Marshal(u)
-			services.SetCache(cacheKey, string(cacheValue))
+			services.SetCache(cacheKey, &u)
 		}
 
 		if u.UId == AdminConf.UId {

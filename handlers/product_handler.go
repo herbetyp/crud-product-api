@@ -1,11 +1,13 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
+	"strconv"
 
+	"github.com/herbetyp/crud-product-api/internal/configs/logger"
 	"github.com/herbetyp/crud-product-api/internal/interfaces"
 	model "github.com/herbetyp/crud-product-api/models/product"
+	"github.com/herbetyp/crud-product-api/services"
 	service "github.com/herbetyp/crud-product-api/services"
 )
 
@@ -26,58 +28,47 @@ func (h *ProductHandler) CreateProduct(data model.ProductDTO) (model.Product, er
 		return model.Product{}, fmt.Errorf("cannot create product: %v", err)
 	}
 
-	bytes, _ := json.Marshal(p)
-	service.SetCache(PRODUCT_PREFIX+fmt.Sprintf("%d", p.ID), string(bytes))
-
-	service.DeleteCache(PRODUCT_PREFIX + "all")
+	services.SetCache(PRODUCT_PREFIX+fmt.Sprintf("%d", p.ID), &p)
 
 	return p, nil
 }
 
 func (h *ProductHandler) GetProduct(id uint) (model.Product, error) {
-	var p model.Product
+	var prod model.Product
+
 	cacheKey := PRODUCT_PREFIX + fmt.Sprintf("%d", id)
 
-	if cachedData := service.GetCache(cacheKey); cachedData != "" {
-		err := json.Unmarshal([]byte(cachedData), &p)
-		if err != nil {
-			return model.Product{}, nil
-		}
-	} else {
+	cached := services.GetCache(cacheKey, &prod)
+	if cached == "" {
 		p, err := h.repository.Get(id)
 		if err != nil {
-			return model.Product{}, fmt.Errorf("cannot find product: %v", err)
+			logger.Error("error on get product from database: %v", err)
+			return model.Product{}, err
 		}
-		cacheValue, _ := json.Marshal(p)
-		service.SetCache(cacheKey, string(cacheValue))
-
-		return p, nil
+		services.SetCache(cacheKey, &p)
+		prod = p
 	}
 
-	return p, nil
+	return prod, nil
 }
+
 func (h *ProductHandler) GetProducts() ([]model.Product, error) {
-	var ps []model.Product
+	var prods []model.Product
+
 	cacheKey := PRODUCT_PREFIX + "all"
 
-	if cachedData := service.GetCache(cacheKey); cachedData != "" {
-		err := json.Unmarshal([]byte(cachedData), &ps)
-		if err != nil {
-			return []model.Product{}, nil
-		}
-	} else {
+	cached := services.GetCache(cacheKey, &prods)
+	if cached == "" {
 		ps, err := h.repository.GetAll()
 		if err != nil {
-			return nil, fmt.Errorf("cannot find products: %v", err)
+			logger.Error("error on get products from database: %v", err)
+			return nil, err
 		}
-
-		cacheValue, _ := json.Marshal(ps)
-		service.SetCache(cacheKey, string(cacheValue))
-
-		return ps, nil
+		services.SetCache(cacheKey, &ps)
+		prods = ps
 	}
 
-	return ps, nil
+	return prods, nil
 }
 
 func (h *ProductHandler) UpdateProduct(data model.ProductDTO) (model.Product, error) {
@@ -89,19 +80,19 @@ func (h *ProductHandler) UpdateProduct(data model.ProductDTO) (model.Product, er
 		return model.Product{}, fmt.Errorf("cannot update product: %v", err)
 	}
 
-	service.DeleteCache(fmt.Sprintf("%s%d", PRODUCT_PREFIX, p.ID))
+	service.DeleteCache(strconv.FormatUint(uint64(p.ID), 10), PRODUCT_PREFIX, true)
 
 	return p, nil
 }
 
-func (h *ProductHandler) DeleteProduct(data model.ProductDTO, id uint) (model.Product, error) {
-	prod := model.NewProductWithID(data.ID, data.Name, data.Price, data.Code, data.Qtd, data.Unity)
-
-	p, err := h.repository.Delete(*prod)
+func (h *ProductHandler) DeleteProduct(id uint) (model.Product, error) {
+	p, err := h.repository.Delete(id)
 
 	if err != nil {
 		return model.Product{}, fmt.Errorf("cannot delete product: %v", err)
 	}
+
+	service.DeleteCache(strconv.FormatUint(uint64(p.ID), 10), PRODUCT_PREFIX, true)
 
 	return p, nil
 }

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/herbetyp/crud-product-api/internal/configs/logger"
@@ -25,20 +24,14 @@ func (h *LoginHandler) NewLogin(l loginModel.LoginDTO) (string, string, error) {
 	fing := services.GenerateFingerprint(l.Email)
 	cacheKey := USER_PREFIX + fing
 
-	cacheData := services.GetCache(cacheKey)
-	if cacheData != "" {
-		err := json.Unmarshal([]byte(cacheData), &user)
-		if err != nil {
-			return "", "", err
-		}
-	} else {
+	cached := services.GetCache(cacheKey, &user)
+	if cached == "" {
 		u, err := h.repository.GetLogin(l.Email)
 		if err != nil {
 			logger.Error("error on get user from database: %v", err)
 			return "", "", err
 		}
-		cacheValue, _ := json.Marshal(u)
-		services.SetCache(cacheKey, string(cacheValue))
+		services.SetCache(cacheKey, &u)
 		user = u
 	}
 
@@ -55,6 +48,7 @@ func (h *LoginHandler) NewLogin(l loginModel.LoginDTO) (string, string, error) {
 
 	return token, tokenId, nil
 }
+
 func NewLoginHandler(r interfaces.ILoginRepository) *LoginHandler {
 	return &LoginHandler{
 		repository: r,

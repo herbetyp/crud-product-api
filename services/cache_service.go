@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"strconv"
 	"time"
 
@@ -35,28 +36,50 @@ func StartCache() {
 	logger.Info("connected to cache at port: " + cacheConf.Port)
 }
 
-func GetCache(key string) string {
-	val, err := cache.Get(ctx, key).Result()
-	if err != nil {
-		return ""
-	}
-	return val
-}
-
-func SetCache(key string, value string) string {
+func SetCache(key string, i interface{}) interface{} {
 	var ttl = config.GetConfig().CACHE.ExpiresIn
 
-	err := cache.Set(ctx, key, value, ttl*time.Second).Err()
+	cacheValue, err := json.Marshal(i)
+
 	if err != nil {
-		logger.Error("error setting cache", err)
+		logger.Error("error marshalling cache", err)
+	} else {
+		err := cache.Set(ctx, key, string(cacheValue), ttl*time.Second).Err()
+		if err != nil {
+			logger.Error("error setting cache", err)
+		}
 	}
 
-	return value
+	return cacheValue
 }
 
-func DeleteCache(key string) {
-	err := cache.Del(ctx, key).Err()
+func GetCache(key string, i interface{}) string {
+	cacheData, err := cache.Get(ctx, key).Result()
+
+	if err != redis.Nil {
+		logger.Error("error getting cache", err)
+	}
+
+	if cacheData != "" {
+		err = json.Unmarshal([]byte(cacheData), i)
+		if err != nil {
+			logger.Error("error unmarshalling cache", err)
+		}
+	}
+
+	return cacheData
+}
+
+func DeleteCache(key string, prefix string, flushall bool) {
+	err := cache.Del(ctx, prefix+key).Err()
 	if err != nil {
 		logger.Error("error deleting cache", err)
+	}
+
+	if flushall {
+		err := cache.Del(ctx, prefix+"all").Err()
+		if err != nil {
+			logger.Error("error flushing cache", err)
+		}
 	}
 }

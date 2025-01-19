@@ -137,12 +137,10 @@ func DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	var dto model.ProductDTO
-
 	repo := &repository.ProductRepository{}
 	handler := handlers.NewProductHandler(repo)
 
-	result, err := handler.DeleteProduct(dto, uint(prodID))
+	result, err := handler.DeleteProduct(uint(prodID))
 
 	if err != nil {
 		c.JSON(400, gin.H{

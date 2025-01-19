@@ -44,10 +44,19 @@ func (r *ProductRepository) Update(p model.Product) (model.Product, error) {
 	return p, err
 }
 
-func (r *ProductRepository) Delete(p model.Product) (model.Product, error) {
+func (r *ProductRepository) Delete(id uint) (model.Product, error) {
 	db := database.GetDatabase()
 
-	err := db.Model(&p).Delete(&p).Error
+	var p model.Product
 
-	return p, err
+	if err := db.First(&p, id).Error; err != nil {
+		return model.Product{}, err
+	}
+
+	err := db.Delete(&p).Error
+	if err != nil {
+		return model.Product{}, err
+	}
+
+	return p, nil
 }
